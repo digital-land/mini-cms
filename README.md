@@ -16,11 +16,41 @@ A headless git based CMS for managing content for guidance pages.
 
 ## Getting Started
 
+### Option 1: Local Development
+
 1. Clone the repository
 2. Run `source .venv/bin/activate`
 3. Run `python -m venv .venv`
 4. Run `pip install -r requirements.txt`
 5. Run `fastapi dev main.py`
+
+### Option 2: Using Docker (Recommended)
+
+1. Clone the repository
+2. Make sure you have Docker and Docker Compose installed
+3. Build and start the containers:
+   ```bash
+   docker compose up --build
+   ```
+4. For subsequent runs, simply use:
+   ```bash
+   docker compose up
+   ```
+5. To stop the containers:
+   ```bash
+   docker compose down
+   ```
+
+The application will be available at `http://localhost:8000` in both cases.
+
+### Development with Docker
+
+- The application uses hot-reload, so any changes you make to the code will automatically trigger a reload
+- Application logs can be viewed using `docker compose logs -f`
+- To run commands inside the container:
+  ```bash
+  docker compose exec web <command>
+  ```
 
 ## API
 

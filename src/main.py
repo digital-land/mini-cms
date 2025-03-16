@@ -4,6 +4,7 @@ from fastapi.responses import RedirectResponse
 from fastapi_sso.sso.github import GithubSSO
 from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
+from fastapi.templating import Jinja2Templates
 
 # Load environment variables from .env file
 load_dotenv()
@@ -15,6 +16,7 @@ SECRET_KEY = os.environ.get("APP_KEY", "your-secret-key")  # You should set this
 
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
+views = Jinja2Templates(directory="src/views")
 
 sso = GithubSSO(
     client_id=CLIENT_ID,
@@ -33,8 +35,10 @@ async def get_current_user(request: Request):
     return user
 
 @app.get("/")
-async def read_root(user: dict = Depends(get_current_user)):
-    return user
+async def read_root(request: Request, user: dict = Depends(get_current_user)):
+    return views.TemplateResponse(
+        request=request, name="index.html", context={"user": user}
+    )
 
 @app.get("/auth/user")
 async def auth_user(user: dict = Depends(get_current_user)):

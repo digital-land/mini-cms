@@ -22,21 +22,33 @@ A headless git based CMS for managing content for guidance pages.
 2. Run `source .venv/bin/activate`
 3. Run `python -m venv .venv`
 4. Run `pip install -r requirements.txt`
-5. Run `fastapi dev main.py`
+5. Set up environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+   Then edit `.env` and add your GitHub OAuth credentials:
+   - Get your credentials from GitHub > Settings > Developer settings > OAuth Apps
+   - Update `CLIENT_ID` and `CLIENT_SECRET` with your values
+6. Run `fastapi dev main.py`
 
 ### Option 2: Using Docker (Recommended)
 
 1. Clone the repository
 2. Make sure you have Docker and Docker Compose installed
-3. Build and start the containers:
+3. Set up environment variables (same as in Option 1):
+   ```bash
+   cp .env.example .env
+   ```
+   Then edit `.env` and add your GitHub OAuth credentials
+4. Build and start the containers:
    ```bash
    docker compose up --build
    ```
-4. For subsequent runs, simply use:
+5. For subsequent runs, simply use:
    ```bash
    docker compose up
    ```
-5. To stop the containers:
+6. To stop the containers:
    ```bash
    docker compose down
    ```
@@ -101,4 +113,3 @@ curl -X PUT "http://localhost:8000/collections/{collection_id}/content-items/{co
 ```bash
 curl -X DELETE "http://localhost:8000/collections/{collection_id}/content-items/{content_item_id}"
 ```
-

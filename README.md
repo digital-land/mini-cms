@@ -19,17 +19,18 @@ A headless git based CMS for managing content for guidance pages.
 ### Option 1: Local Development
 
 1. Clone the repository
-2. Run `source .venv/bin/activate`
-3. Run `python -m venv .venv`
+2. Run `python -m venv .venv`
+3. Run `source .venv/bin/activate`
 4. Run `pip install -r requirements.txt`
 5. Set up environment variables:
    ```bash
    cp .env.example .env
    ```
-   Then edit `.env` and add your GitHub OAuth credentials:
-   - Get your credentials from GitHub > Settings > Developer settings > OAuth Apps
-   - Update `CLIENT_ID` and `CLIENT_SECRET` with your values
-6. Run `fastapi dev main.py`
+   Then edit `.env` and add your values:
+   - Get GitHub OAuth credentials from GitHub > Settings > Developer settings > OAuth Apps
+   - Generate a secure random key for APP_KEY
+   - Update APP_HOST if not running on localhost:8000
+6. Run `uvicorn src.main:app --reload`
 
 ### Option 2: Using Docker (Recommended)
 

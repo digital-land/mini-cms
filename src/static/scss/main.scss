@@ -1,0 +1,6 @@
+$govuk-assets-path: "/static/assets/";
+$govuk-images-path: "#{$govuk-assets-path}images/";
+$govuk-fonts-path: "#{$govuk-assets-path}fonts/";
+
+// Import all GOV.UK Frontend styles
+@use "govuk-frontend/dist/govuk/all";

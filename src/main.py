@@ -5,6 +5,7 @@ from fastapi_sso.sso.github import GithubSSO
 from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 # Load environment variables from .env file
 load_dotenv()
@@ -16,6 +17,11 @@ SECRET_KEY = os.environ.get("APP_KEY", "your-secret-key")  # You should set this
 
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
+
+# Mount static files
+app.mount("/static", StaticFiles(directory="src/static/dist"), name="static")
+app.mount("/assets", StaticFiles(directory="src/static/assets"), name="static_assets")
+
 views = Jinja2Templates(directory="src/views")
 
 sso = GithubSSO(

@@ -83,9 +83,9 @@ class GithubService:
         return {
             "has_access": True,
             "permissions": {
-                "admin": permissions.get("admin", False),
-                "push": permissions.get("push", False),
-                "pull": permissions.get("pull", False)
+                "read": permissions.get("pull", False),
+                "write": permissions.get("push", False),
+                "admin": permissions.get("admin", False)
             }
         }
 

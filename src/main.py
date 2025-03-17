@@ -35,6 +35,13 @@ sso = GithubSSO(
 
 async def get_current_user(request: Request):
     session_user = request.session.get("user")
+
+    if not session_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated"
+        )
+
     github_service = GithubService(access_token=session_user.get("access_token"))
     user = github_service.get_current_user()
 

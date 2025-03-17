@@ -1,5 +1,6 @@
 import requests
 from typing import Dict, Optional
+from fastapi import HTTPException, status
 
 class GithubService:
     def __init__(self, access_token: Optional[str] = None):

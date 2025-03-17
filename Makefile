@@ -14,7 +14,7 @@ CSS_OUT = $(DIST_DIR)/css/main.css
 JS_OUT = $(DIST_DIR)/js/main.js
 
 # Default target
-all: clean assets css js
+all: clean assets css js install
 
 # Clean build files
 clean:
@@ -37,3 +37,11 @@ js:
 # Watch for changes (development)
 watch:
 	npm run watch:css & npm run watch:js
+
+# Install dependencies
+install:
+	pip install -r requirements.txt
+
+# Run the FastAPI application
+run:
+	uvicorn src.main:app --reload

@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from services.github_service import GithubService
+from src.services.github_service import GithubService
 
 # Load environment variables from .env file
 load_dotenv()
@@ -15,14 +15,16 @@ HOST = os.environ["APP_HOST"]
 CLIENT_ID = os.environ["CLIENT_ID"]
 CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 DATA_REPO = os.environ.get("DATA_REPO", "")  # Format: owner/repo
-SECRET_KEY = os.environ.get("APP_KEY", "your-secret-key")  # You should set this in .env
+# You should set this in .env
+SECRET_KEY = os.environ.get("APP_KEY", "your-secret-key")
 
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="src/static/dist"), name="static")
-app.mount("/assets", StaticFiles(directory="src/static/assets"), name="static_assets")
+app.mount("/assets", StaticFiles(directory="src/static/assets"),
+          name="static_assets")
 
 views = Jinja2Templates(directory="src/views")
 
@@ -33,6 +35,7 @@ sso = GithubSSO(
     allow_insecure_http=HOST.startswith("http://localhost"),
 )
 
+
 async def get_current_user(request: Request):
     session_user = request.session.get("user")
 
@@ -42,7 +45,8 @@ async def get_current_user(request: Request):
             detail="Not authenticated"
         )
 
-    github_service = GithubService(access_token=session_user.get("access_token"))
+    github_service = GithubService(
+        access_token=session_user.get("access_token"))
     user = github_service.get_current_user()
 
     if not user:
@@ -52,25 +56,30 @@ async def get_current_user(request: Request):
         )
     return {**user, "access_token": session_user.get("access_token")}
 
+
 @app.get("/")
 async def read_root(request: Request, user: dict = Depends(get_current_user)):
     github_service = GithubService(access_token=user.get("access_token"))
-    data_config = github_service.get_repo_content_for_path(DATA_REPO, "config.yml", format="yaml")
+    data_config = github_service.get_repo_content_for_path(
+        DATA_REPO, "config.yml", format="yaml")
     collections = data_config.get("collections", [])
 
     return views.TemplateResponse(
         request=request, name="index.html", context={"user": user, "collections": collections}
     )
 
+
 @app.get("/auth/user")
 async def auth_user(user: dict = Depends(get_current_user)):
     """Get current user"""
     return user
 
+
 @app.get("/auth/login")
 async def auth_init():
     """Initialize auth and redirect"""
     return await sso.get_login_redirect()
+
 
 @app.get("/auth/callback")
 async def auth_callback(request: Request):
@@ -89,11 +98,13 @@ async def auth_callback(request: Request):
 
     return RedirectResponse(url="/")
 
+
 @app.get("/auth/logout")
 async def auth_logout(request: Request):
     """Logout"""
     request.session.clear()
     return RedirectResponse(url="/auth/login")
+
 
 @app.get("/auth/check-repo-access")
 async def check_repo_access(request: Request, user: dict = Depends(get_current_user)):
@@ -114,6 +125,7 @@ async def check_repo_access(request: Request, user: dict = Depends(get_current_u
     github_service = GithubService(access_token=access_token)
 
     return github_service.check_repo_access(DATA_REPO)
+
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):

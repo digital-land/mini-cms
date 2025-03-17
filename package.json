@@ -5,7 +5,7 @@
     "build:js": "esbuild src/static/js/main.js --bundle --minify --outfile=src/static/dist/js/main.js",
     "watch:css": "sass src/static/scss/main.scss src/static/dist/css/main.css --watch --load-path=node_modules",
     "watch:js": "esbuild src/static/js/main.js --bundle --watch --outfile=src/static/dist/js/main.js",
-    "dev": "make && uvicorn src.main:app --reload",
+    "dev": "make && make run",
     "heroku-postbuild": "npm run build"
   },
   "engines": {

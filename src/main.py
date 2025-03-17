@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from services.GithubService import GithubService
+from services.github_service import GithubService
 
 # Load environment variables from .env file
 load_dotenv()

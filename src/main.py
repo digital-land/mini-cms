@@ -1,5 +1,4 @@
 import os
-import httpx
 from fastapi import FastAPI, Request, Depends, HTTPException, status
 from fastapi.responses import RedirectResponse
 from fastapi_sso.sso.github import GithubSSO
@@ -44,12 +43,16 @@ async def get_current_user(request: Request):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authenticated"
         )
-    return user
+    return {**user, "access_token": session_user.get("access_token")}
 
 @app.get("/")
 async def read_root(request: Request, user: dict = Depends(get_current_user)):
+    github_service = GithubService(access_token=user.get("access_token"))
+    data_config = github_service.get_repo_content_for_path(DATA_REPO, "config.yml", format="yaml")
+    collections = data_config.get("collections", [])
+
     return views.TemplateResponse(
-        request=request, name="index.html", context={"user": user}
+        request=request, name="index.html", context={"user": user, "collections": collections}
     )
 
 @app.get("/auth/user")

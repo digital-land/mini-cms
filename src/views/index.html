@@ -10,6 +10,17 @@ block content %}
       Create, edit, and delete content with ease—no need for complex formats or
       expensive databases. Just simple, streamlined control at your fingertips.
     </p>
+
+    <h2 class="govuk-heading-l">Collections</h2>
+    <ul class="govuk-list govuk-list--bullet">
+      {% for collection in collections %}
+      <li>
+        <a href="/collections/{{ collection.id }}" class="govuk-link">
+          {{ collection.name }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
   </div>
 </div>
 

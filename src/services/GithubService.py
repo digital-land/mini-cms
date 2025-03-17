@@ -1,4 +1,7 @@
 import requests
+import base64
+import json
+import yaml
 from typing import Dict, Optional
 from fastapi import HTTPException, status
 
@@ -85,3 +88,35 @@ class GithubService:
                 "pull": permissions.get("pull", False)
             }
         }
+
+    def get_repo_content_for_path(self, repo: str, path: str, format: str = "yaml") -> Dict:
+        """
+        Get the contents of a file or directory at a specific path in a repository.
+
+        Args:
+            repo (str): Repository name in the format "owner/repo"
+            path (str): Path to the file or directory within the repository
+
+        Returns:
+            Dict: Content information including type (file/dir), size, encoding, and content
+                 for files or list of contents for directories
+
+        Raises:
+            requests.exceptions.RequestException: If the API request fails
+        """
+        response = requests.get(
+            f"{self.base_url}/repos/{repo}/contents/{path}",
+            headers=self.headers
+        )
+        response.raise_for_status()
+        response = response.json()
+        base64Content = response.get("content", "")
+        content = base64.b64decode(base64Content).decode("utf-8")
+
+        if format == "yaml":
+            return yaml.safe_load(content)
+        elif format == "json":
+            return json.loads(content)
+        else:
+            return content
+

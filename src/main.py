@@ -1,4 +1,5 @@
 import os
+import httpx
 from fastapi import FastAPI, Request, Depends, HTTPException, status
 from fastapi.responses import RedirectResponse
 from fastapi_sso.sso.github import GithubSSO
@@ -6,7 +7,7 @@ from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-import httpx
+from services.GithubService import GithubService
 
 # Load environment variables from .env file
 load_dotenv()
@@ -34,7 +35,10 @@ sso = GithubSSO(
 )
 
 async def get_current_user(request: Request):
-    user = request.session.get("user")
+    session_user = request.session.get("user")
+    github_service = GithubService(access_token=session_user.get("access_token"))
+    user = github_service.get_current_user()
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -82,7 +86,7 @@ async def auth_logout(request: Request):
     return RedirectResponse(url="/auth/login")
 
 @app.get("/auth/check-repo-access")
-async def check_repo_access(user: dict = Depends(get_current_user)):
+async def check_repo_access(request: Request, user: dict = Depends(get_current_user)):
     """Check if the current user has read and write access to the DATA_REPO"""
     if not DATA_REPO:
         raise HTTPException(
@@ -90,45 +94,16 @@ async def check_repo_access(user: dict = Depends(get_current_user)):
             detail="DATA_REPO environment variable is not set"
         )
 
-    access_token = user.get("access_token")
+    access_token = request.session.get("user").get("access_token")
     if not access_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="No access token found"
         )
 
-    async with httpx.AsyncClient() as client:
-        headers = {
-            "Authorization": f"Bearer {access_token}",
-            "Accept": "application/vnd.github.v3+json"
-        }
-        response = await client.get(
-            f"https://api.github.com/repos/{DATA_REPO}",
-            headers=headers
-        )
+    github_service = GithubService(access_token=access_token)
 
-        if response.status_code == 404:
-            return {
-                "has_access": False,
-                "detail": "Repository not found or no access"
-            }
-        elif response.status_code != 200:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Failed to check repository access"
-            )
-
-        repo_data = response.json()
-        permissions = repo_data.get("permissions", {})
-
-        return {
-            "has_access": True,
-            "permissions": {
-                "admin": permissions.get("admin", False),
-                "push": permissions.get("push", False),
-                "pull": permissions.get("pull", False)
-            }
-        }
+    return github_service.check_repo_access(DATA_REPO)
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):

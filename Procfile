@@ -1,1 +1,1 @@
-web: pip install -e . && npm run build && cd src && uvicorn main:app --host 0.0.0.0 --port $PORT
+web: pip install -e . && make && cd src && uvicorn main:app --host 0.0.0.0 --port $PORT

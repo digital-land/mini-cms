@@ -1,9 +1,11 @@
 {
   "scripts": {
+    "build": "npm run build:css && npm run build:js",
     "build:css": "sass src/static/scss/main.scss src/static/dist/css/main.css --style compressed --load-path=node_modules",
     "build:js": "esbuild src/static/js/main.js --bundle --minify --outfile=src/static/dist/js/main.js",
     "watch:css": "sass src/static/scss/main.scss src/static/dist/css/main.css --watch --load-path=node_modules",
-    "watch:js": "esbuild src/static/js/main.js --bundle --watch --outfile=src/static/dist/js/main.js"
+    "watch:js": "esbuild src/static/js/main.js --bundle --watch --outfile=src/static/dist/js/main.js",
+    "dev": "make && uvicorn src.main:app --reload"
   },
   "dependencies": {
     "govuk-frontend": "^5.9.0"

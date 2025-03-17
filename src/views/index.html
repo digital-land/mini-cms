@@ -1,20 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Mini CMS</title>
-    <link
-      href="{{ url_for('static', path='/css/main.css') }}"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <h1 class="govuk-heading-xl">Hi {{ user.display_name }}</h1>
-    <p>
-      <a href="/auth/logout" class="govuk-button">Logout</a>
-    </p>
+{% extends "layout.html" %} {% block title %}Home | Mini CMS{% endblock %} {%
+block content %}
 
-    <script src="{{ url_for('static', path='/js/main.js') }}" defer></script>
-  </body>
-</html>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">Welcome to Mini CMS!</h1>
+
+    <p class="govuk-body">
+      This lightweight, Git-powered CMS makes content management effortless.
+      Create, edit, and delete content with ease—no need for complex formats or
+      expensive databases. Just simple, streamlined control at your fingertips.
+    </p>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Mini CMS{% endblock %}</title>
+    <link
+      href="{{ url_for('static', path='/css/main.css') }}"
+      rel="stylesheet"
+    />
+    {% block head %}{% endblock %}
+  </head>
+  <body class="govuk-template__body">
+    {% include "components/header.html" %}
+
+    <div class="govuk-width-container">
+      <main class="govuk-main-wrapper" id="main-content">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+
+    {% include "components/footer.html" %}
+
+    <script src="{{ url_for('static', path='/js/main.js') }}" defer></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

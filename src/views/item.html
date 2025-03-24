@@ -6,30 +6,48 @@
   <div class="govuk-grid-column-full">
     <h1 class="govuk-heading-xl">{{ item.display_name }}</h1>
 
-    <dl class="govuk-summary-list">
-      {% for field in collection.fields if field.type not in ['repeatable'] %}
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">{{ field.label }}</dt>
-          <dd class="govuk-summary-list__value">{{ item.data[field.id] }}</dd>
-        </div>
-      {% endfor %}
-    </dl>
-
+    <div class="govuk-summary-card">
+      <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">
+          Data
+        </h2>
+      </div>
+      <div class="govuk-summary-card__content">
+        <dl class="govuk-summary-list">
+          {% for field in collection.fields if field.type not in ['repeatable'] %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">{{ field.label }}</dt>
+              <dd class="govuk-summary-list__value">{{ item.data[field.id] }}</dd>
+            </div>
+          {% endfor %}
+        </dl>
+      </div>
+    </div>
     {% for field in collection.fields if field.type in ['repeatable'] %}
-      <h2 class="govuk-heading-l">{{ field.label }}</h2>
+      <h2 class="govuk-heading-m">{{ field.label }}</h2>
 
       {% for item in item.data[field.id] %}
-      <dl class="govuk-summary-list govuk-summary-list--card">
-        {% for subfield in field.fields %}
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">{{ subfield.label }}</dt>
-          <dd class="govuk-summary-list__value">
-            {% set value=item[subfield.id] %}
-            {% include "components/item_value.html" with context %}
-          </dd>
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            {{ field.label_single }} ({{loop.index}} / {{loop.length}})
+          </h2>
         </div>
-        {% endfor %}
-      </dl>
+        <div class="govuk-summary-card__content">
+        <dl class="govuk-summary-list">
+          {% for subfield in field.fields %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">{{ subfield.label }}</dt>
+            <dd class="govuk-summary-list__value">
+              {% set value=item[subfield.id] %}
+              {% set field=subfield %}
+              {% include "components/item_value.html" with context %}
+            </dd>
+          </div>
+          {% endfor %}
+          </dl>
+        </div>
+      </div>
       {% endfor %}
     {% endfor %}
   </div>

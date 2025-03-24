@@ -6,20 +6,18 @@ endblock %} {% block content %}
     <h1 class="govuk-heading-xl">{{ item.display_name }}</h1>
 
     <dl class="govuk-summary-list">
-      {% for key, value in item.data.items() %} {% if not value is sequence or
-      value is string %}
+      {% for field in collection.fields if field.type not in ['repeatable'] %}
       <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">{{ key }}</dt>
-        <dd class="govuk-summary-list__value">{{ value }}</dd>
+        <dt class="govuk-summary-list__key">{{ field.label }}</dt>
+        <dd class="govuk-summary-list__value">{{ item.data[field.id] }}</dd>
       </div>
-      {% endif %} {% endfor %}
+      {% endfor %}
     </dl>
 
-    {% for key, value in item.data.items() %} {% if value is sequence and value
-    is not string %}
-    <h2 class="govuk-heading-l">{{ key }}</h2>
-    {% set data=value %} {% include "components/table.html" with context %} {%
-    endif %} {% endfor %}
+    {% for field in collection.fields if field.type in ['repeatable'] %}
+    <h2 class="govuk-heading-m">{{ field.label }}</h2>
+    {% set data=item.data[field.id] %} {% include "components/table.html" with
+    context %} {% endfor %}
   </div>
 </div>
 

@@ -54,7 +54,13 @@ async def get_item(
     item_id: str = Path(..., description="The ID of the item to retrieve")):
 
     github_service = GithubService(access_token=user.get("access_token"))
+    collection = next((c for c in github_service.get_repo_content_for_path(
+        DATA_REPO, f"/config.yml", format="yaml").get("collections", []) if c.get("id") == collection_id), None)
     item = github_service.get_repo_content_for_path(
         DATA_REPO, f"/data/collections/{collection_id}/{item_id}.yml", format="yaml")
 
-    return views.TemplateResponse(request=request, name="item.html", context={"user": user, "item": item})
+    return views.TemplateResponse(
+        request=request,
+        name="item.html",
+        context={"user": user, "item": item, "collection": collection}
+    )

@@ -1,0 +1,32 @@
+{% extends "layout.html" %} {% block title %}Collection | Mini CMS{% endblock %}
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">{{ collection.label }}</h1>
+
+    {% if collection.description %}
+    <p class="govuk-body">{{ collection.description }}</p>
+    {% endif %}
+
+    <h2 class="govuk-heading-l">Items</h2>
+    {% if items and items|length > 0 %}
+    <ul class="govuk-list govuk-list--bullet">
+      {% for item in items %}
+      <li>
+        <a
+          href="/collections/{{ collection.id }}/{{ item.id }}"
+          class="govuk-link"
+        >
+          {{ item.label }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="govuk-body">No items found</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

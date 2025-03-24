@@ -2,7 +2,7 @@ import requests
 import base64
 import json
 import yaml
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 from fastapi import HTTPException, status
 
 class GithubService:
@@ -119,4 +119,18 @@ class GithubService:
             return json.loads(content)
         else:
             return content
+
+    def list_files_in_directory(self, repo: str, path: str) -> List[Dict]:
+        """
+        List all files in a specific directory in a repository.
+
+        Args:
+            repo (str): Repository name in the format "owner/repo"
+        """
+        response = requests.get(
+            f"{self.base_url}/repos/{repo}/contents/{path.strip('/')}",
+            headers=self.headers
+        )
+        response.raise_for_status()
+        return response.json()
 

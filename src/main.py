@@ -7,7 +7,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from src.services.github_service import GithubService
 from src.routes.auth import router as auth_router, get_current_user
-
+from src.routes.collection import router as collection_router
 # Load environment variables from .env file
 load_dotenv()
 
@@ -28,6 +28,7 @@ views = Jinja2Templates(directory="src/views")
 
 # Include auth routes
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
+app.include_router(collection_router, prefix="/collections", tags=["collections"], dependencies=[Depends(get_current_user)])
 
 
 @app.get("/")

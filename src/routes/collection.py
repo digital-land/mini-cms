@@ -25,14 +25,22 @@ async def get_collection(request: Request, user: dict = Depends(get_current_user
 
     try:
         items = github_service.list_files_in_directory(
-            DATA_REPO, collection.get("storage_path")
+            DATA_REPO, f"/data/collections/{collection_id}"
         )
     except Exception as e:
         print("Error listing files in directory")
         print(e)
 
     # Filter out directories
-    items = [item for item in items if item.get("type") == "file"]
+    items = [item for item in items if item.get("type") == "file" and (item.get("name").endswith(".yml") or item.get("name").endswith(".yaml"))]
+
+    # Transform items to get their content
+    items = list(map(
+        lambda item: github_service.get_repo_content_for_path(
+            DATA_REPO, f"/data/collections/{collection_id}/{item.get('name')}", format="yaml"
+        ),
+        items
+    ))
 
     return views.TemplateResponse(
         request=request, name="collection.html", context={"user": user, "collection": collection, "items": items}

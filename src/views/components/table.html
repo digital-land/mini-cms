@@ -1,0 +1,26 @@
+{% if data and data|length > 0 %}
+<table class="govuk-table">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      {% for key in data[0].keys() %}
+      <th scope="col" class="govuk-table__header">{{ key }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    {% for item in data %}
+    <tr class="govuk-table__row">
+      {% for value in item.values() %}
+      <td class="govuk-table__cell">
+        {% if value is mapping or (value is sequence and value is not string) %}
+        {% include "components/item_value.html" with context %} {% else %} {{
+        value }} {% endif %}
+      </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="govuk-body">No data available</p>
+{% endif %}

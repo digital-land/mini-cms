@@ -3,18 +3,12 @@ string %}
 <ul class="govuk-list">
   {% for item in value %}
   <li>
-    {% if item is mapping %}
-    <dl class="govuk-summary-list">
-      {% for key, val in item.items() %}
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">{{ key }}</dt>
-        <dd class="govuk-summary-list__value">
-          {% set value = val %} {% include "components/item_value.html" with
-          context %}
-        </dd>
-      </div>
+    {% if item is mapping or (item is sequence and item is not string) %}
+    <ul class="govuk-list govuk-!-margin-top-0">
+      {% for key, value in item.items() %}
+      <li><strong>{{ key }}:</strong> {{ value }}</li>
       {% endfor %}
-    </dl>
+    </ul>
     {% else %} {{ item }} {% endif %}
   </li>
   {% endfor %}

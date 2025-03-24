@@ -46,3 +46,15 @@ async def get_collection(request: Request, user: dict = Depends(get_current_user
         request=request, name="collection.html", context={"user": user, "collection": collection, "items": items}
     )
 
+@router.get("/{collection_id}/{item_id}")
+async def get_item(
+    request: Request,
+    user: dict = Depends(get_current_user),
+    collection_id: str = Path(..., description="The ID of the collection to retrieve"),
+    item_id: str = Path(..., description="The ID of the item to retrieve")):
+
+    github_service = GithubService(access_token=user.get("access_token"))
+    item = github_service.get_repo_content_for_path(
+        DATA_REPO, f"/data/collections/{collection_id}/{item_id}.yml", format="yaml")
+
+    return views.TemplateResponse(request=request, name="item.html", context={"user": user, "item": item})

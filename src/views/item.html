@@ -1,0 +1,21 @@
+{% extends "layout.html" %} {% block title %}Collection Item | Mini CMS{%
+endblock %} {% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl">{{ item.display_name }}</h1>
+
+    <dl class="govuk-summary-list">
+      {% for key, value in item.data.items() %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">{{ key }}</dt>
+        <dd class="govuk-summary-list__value">
+          {% include "components/item_value.html" with context %}
+        </dd>
+      </div>
+      {% endfor %}
+    </dl>
+  </div>
+</div>
+
+{% endblock %}

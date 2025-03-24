@@ -1,0 +1,22 @@
+{% if value is string %} {{ value }} {% elif value is sequence and value is not
+string %}
+<ul class="govuk-list">
+  {% for item in value %}
+  <li>
+    {% if item is mapping %}
+    <dl class="govuk-summary-list">
+      {% for key, val in item.items() %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">{{ key }}</dt>
+        <dd class="govuk-summary-list__value">
+          {% set value = val %} {% include "components/item_value.html" with
+          context %}
+        </dd>
+      </div>
+      {% endfor %}
+    </dl>
+    {% else %} {{ item }} {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}

@@ -18,7 +18,7 @@
           href="/collections/{{ collection.id }}/{{ item.id }}"
           class="govuk-link"
         >
-          {{ item.display_name }}
+          {{ item.data[collection.field_map.label] }} ({{ item.data[collection.field_map.id] }})
         </a>
       </li>
       {% endfor %}

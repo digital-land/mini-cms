@@ -1,32 +1,5 @@
-{% if value is string %} {{ value }} {% elif value is sequence and value is not
-string %}
-  <ul class="govuk-list">
-    {% for item in value %}
-    <li>
-      {% if item is mapping or (item is sequence and item is not string) %}
-      <div class="govuk-summary-card">
-        <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">
-            {{ field.label_single }} ({{loop.index}} / {{loop.length}})
-          </h2>
-        </div>
-        <div class="govuk-summary-card__content">
-          <dl class="govuk-summary-list">
-            {% for subfield in field.fields %}
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">{{ subfield.label }}</dt>
-              <dd class="govuk-summary-list__value">
-                {{ item[subfield.id] }}
-              </dd>
-            </div>
-            {% endfor %}
-          </dl>
-        </div>
-      </div>
-      {% else %}
-        {{ item }}
-      {% endif %}
-    </li>
-    {% endfor %}
-  </ul>
+{% if value is sequence and value is not string %}
+  {{ value | length }} {{ field.label | lower }}
+{% else %}
+  {{ value }}
 {% endif %}

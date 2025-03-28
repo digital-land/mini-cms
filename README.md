@@ -30,7 +30,7 @@ A headless git based CMS for managing content for guidance pages.
    - Get GitHub OAuth credentials from GitHub > Settings > Developer settings > OAuth Apps
    - Generate a secure random key for APP_KEY
    - Update APP_HOST if not running on localhost:8000
-6. Run `uvicorn src.main:app --reload`
+6. Run `npm run dev`
 
 ### Option 2: Using Docker (Recommended)
 

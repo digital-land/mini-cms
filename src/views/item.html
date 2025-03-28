@@ -4,13 +4,18 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    <h1 class="govuk-heading-xl">{{ item.display_name }}</h1>
+    <h1 class="govuk-heading-xl">{{ item.data[collection.field_map.label] }}</h1>
 
     <div class="govuk-summary-card">
       <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">
           Data
         </h2>
+        <ul class="govuk-summary-card__actions">
+          <li class="govuk-summary-card__action">
+            <a class="govuk-link" href="/collections/{{ collection.id }}/{{ item.id }}/edit">Edit<span class="govuk-visually-hidden"> {{ item.display_name }}</span></a>
+          </li>
+        </ul>
       </div>
       <div class="govuk-summary-card__content">
         <dl class="govuk-summary-list">
@@ -30,8 +35,13 @@
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title">
-            {{ field.label_single }} ({{loop.index}} / {{loop.length}})
+            {{ item[field.fields[0].id] }} ({{loop.index}} / {{loop.length}})
           </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="#">Edit<span class="govuk-visually-hidden"> {{ field.label_single }}</span></a>
+            </li>
+          </ul>
         </div>
         <div class="govuk-summary-card__content">
         <dl class="govuk-summary-list">

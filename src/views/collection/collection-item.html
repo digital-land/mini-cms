@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}Collection Item | Mini CMS{%endblock %}
+{% set back_link = "/collections/" + collection.id %}
+
 {% block content %}
 
 <div class="govuk-grid-row">
@@ -35,7 +37,7 @@
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title">
-            {{ item[field.fields[0].id] }} ({{loop.index}} / {{loop.length}})
+            {{ item[field.field_map.label] }} ({{ item[field.field_map.id] }})
           </h2>
           <ul class="govuk-summary-card__actions">
             <li class="govuk-summary-card__action">

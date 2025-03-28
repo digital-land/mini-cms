@@ -11,7 +11,7 @@ router = APIRouter()
 views = Jinja2Templates(directory="src/views")
 
 @router.get("/{collection_id}")
-async def get_collection(request: Request, user: dict = Depends(get_current_user), collection_id: str = Path(..., description="The ID of the collection to retrieve")):
+async def index(request: Request, user: dict = Depends(get_current_user), collection_id: str = Path(..., description="The ID of the collection to retrieve")):
     github_service = GithubService(access_token=user.get("access_token"))
     data_config = github_service.get_repo_content_for_path(
         DATA_REPO, "config.yml", format="yaml")
@@ -43,11 +43,11 @@ async def get_collection(request: Request, user: dict = Depends(get_current_user
     ))
 
     return views.TemplateResponse(
-        request=request, name="collection.html", context={"user": user, "collection": collection, "items": items}
+        request=request, name="collection/collection.html", context={"user": user, "collection": collection, "items": items}
     )
 
 @router.get("/{collection_id}/{item_id}")
-async def get_item(
+async def item(
     request: Request,
     user: dict = Depends(get_current_user),
     collection_id: str = Path(..., description="The ID of the collection to retrieve"),
@@ -61,6 +61,6 @@ async def get_item(
 
     return views.TemplateResponse(
         request=request,
-        name="item.html",
+        name="collection/collection-item.html",
         context={"user": user, "item": item, "collection": collection}
     )

@@ -18,6 +18,10 @@
     {% include "components/header.html" %}
 
     <div class="govuk-width-container">
+      {% if back_link %}
+        <a href="{{ back_link }}" class="govuk-back-link">Back</a>
+      {% endif %}
+
       <main class="govuk-main-wrapper" id="main-content">
         {% block content %}{% endblock %}
       </main>

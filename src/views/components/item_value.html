@@ -1,5 +1,0 @@
-{% if value is sequence and value is not string %}
-  {{ value | length }} {{ field.label | lower }}
-{% else %}
-  {{ value }}
-{% endif %}

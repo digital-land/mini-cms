@@ -53,7 +53,11 @@
             <dd class="govuk-summary-list__value">
               {% set value=item[subfield.id] %}
               {% set field=subfield %}
-              {% include "components/item_value.html" with context %}
+              {% if value is sequence and value is not string %}
+                {{ value | length }} {{ field.label | lower }}
+              {% else %}
+                {{ value }}
+              {% endif %}
             </dd>
           </div>
           {% endfor %}

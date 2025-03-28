@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Collection Item | Mini CMS{%endblock %}
+{% block title %}{{ item.data[collection.field_map.label] }} | {{ collection.label }} | Mini CMS{%endblock %}
 {% set back_link = "/collections/" + collection.id %}
 
 {% block content %}
@@ -37,7 +37,11 @@
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title">
-            {{ item[field.field_map.label] }} ({{ item[field.field_map.id] }})
+            {% if item[field.field_map.label] %}
+              {{ item[field.field_map.label] }} ({{ item[field.field_map.id] }})
+            {% else %}
+              {{ item[field.field_map.id] }}
+            {% endif %}
           </h2>
           <ul class="govuk-summary-card__actions">
             <li class="govuk-summary-card__action">
@@ -53,7 +57,7 @@
             <dd class="govuk-summary-list__value">
               {% set value=item[subfield.id] %}
               {% set field=subfield %}
-              {% if value is sequence and value is not string %}
+              {% if value and value is sequence and value is not string %}
                 {{ value | length }} {{ field.label | lower }}
               {% else %}
                 {{ value }}

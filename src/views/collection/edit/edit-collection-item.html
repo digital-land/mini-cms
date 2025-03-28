@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block title %}Edit {{ item.data[collection.field_map.label] }} | {{ collection.label }} | Mini CMS{%endblock %}
+{% set back_link = "/collections/" + collection.id + "/" + item.id %}
+
+{% block content %}
+
+<details>
+  <summary>Debug</summary>
+  <pre class="language-json" style="background-color: #f0f0f0; padding: 10px; border-radius: 5px; font-size: 12px; font-family: monospace;">
+    {{ collection.fields | tojson(indent=4) }}
+  </pre>
+</details>
+
+<form action="/collections/{{ collection.id }}/{{ item.id }}" method="post">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading">
+      Edit {{ item.data[collection.field_map.label] }}
+    </h1>
+  </legend>
+  {% for field in collection.fields %}
+    <div class="govuk-form-group">
+      <label class="govuk-label" for="{{ field.id }}">
+        {{ field.label }}
+      </label>
+      {% if field.type == "text" %}
+        <textarea class="govuk-textarea" id="{{ field.id }}" name="{{ field.id }}">{{ item.data[field.id] }}</textarea>
+      {% elif field.type == "date" %}
+        <input class="govuk-input" id="{{ field.id }}" name="{{ field.id }}" type="date" value="{{ item.data[field.id] }}">
+      {% elif field.type == "repeatable" %}
+        repeatable....
+      {% else %}
+        <input class="govuk-input" id="{{ field.id }}" name="{{ field.id }}" type="text" value="{{ item.data[field.id] }}">
+      {% endif %}
+    </div>
+  {% endfor %}
+  </fieldset>
+  <button class="govuk-button" data-module="govuk-button" type="submit">Save</button>
+</form>
+
+{% endblock %}

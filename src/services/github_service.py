@@ -89,7 +89,7 @@ class GithubService:
             }
         }
 
-    def get_repo_content_for_path(self, repo: str, path: str, format: str = "yaml") -> Dict:
+    def get_repo_content_for_path(self, repo: str, path: str, format: str = "yaml", get_sha: bool = False) -> Dict:
         """
         Get the contents of a file or directory at a specific path in a repository.
 
@@ -114,11 +114,18 @@ class GithubService:
         content = base64.b64decode(base64Content).decode("utf-8")
 
         if format == "yaml":
-            return yaml.safe_load(content)
+            content = yaml.safe_load(content)
         elif format == "json":
-            return json.loads(content)
+            content = json.loads(content)
+
+        if get_sha:
+            return {
+                "content": content,
+                "sha": response.get("sha")
+            }
         else:
             return content
+
 
     def list_files_in_directory(self, repo: str, path: str) -> List[Dict]:
         """
@@ -134,3 +141,36 @@ class GithubService:
         response.raise_for_status()
         return response.json()
 
+    def update_repo_content(self, repo: str, path: str, content: dict, format: str  = "yaml", commit_message: str = "Update content", sha: str = None) -> None:
+        """
+        Update the contents of a file at a specific path in a repository.
+
+        Args:
+            repo (str): Repository name in the format "owner/repo"
+            path (str): Path to the file or directory within the repository
+            content (dict): Content to be updated
+
+        Raises:
+            requests.exceptions.RequestException: If the API request fails
+        """
+        if format == "yaml":
+            content = yaml.dump(content)
+        elif format == "json":
+            content = json.dumps(content)
+
+        print(json.dumps({
+            "headers": self.headers,
+            "url": f"{self.base_url}/repos/{repo}/contents/{path.strip('/')}",
+        }, indent=4))
+
+        response = requests.post(
+            f"{self.base_url}/repos/{repo}/contents/{path.strip('/')}",
+            headers=self.headers,
+            json={
+                "message": commit_message,
+                "content": base64.b64encode(content.encode("utf-8")).decode("utf-8"),
+                "sha": sha
+            }
+        )
+        response.raise_for_status()
+        return response.json()

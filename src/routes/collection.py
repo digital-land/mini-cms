@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request, Depends, Path, HTTPException
+from fastapi.responses import RedirectResponse
 from src.routes.auth import get_current_user
 from src.services.github_service import GithubService
 import os
 from fastapi.templating import Jinja2Templates
-from fastapi import Path, HTTPException
 
 DATA_REPO = os.environ.get("DATA_REPO", "")  # Format: owner/repo
 
@@ -83,3 +83,38 @@ async def edit_item(
         name="collection/edit/edit-collection-item.html",
         context={"user": user, "item": item, "collection": collection}
     )
+
+@router.post("/{collection_id}/{item_id}/update")
+async def update_item(
+    request: Request,
+    user: dict = Depends(get_current_user),
+    collection_id: str = Path(..., description="The ID of the collection to retrieve"),
+    item_id: str = Path(..., description="The ID of the item to retrieve")):
+    item_file_path = f"/data/collections/{collection_id}/{item_id}.yml"
+
+    ## Get the collection
+    github_service = GithubService(access_token=user.get("access_token"))
+    collection = next((c for c in github_service.get_repo_content_for_path(
+        DATA_REPO, f"/config.yml", format="yaml").get("collections", []) if c.get("id") == collection_id), None)
+
+    ## Get the collection item
+    item = github_service.get_repo_content_for_path(
+        DATA_REPO, item_file_path, format="yaml", get_sha=True)
+
+    item_content = item.get("content")
+
+    ## Get the editable fields
+    editable_fields = [field.get("id") for field in collection.get("fields", []) if field.get("editable")]
+
+    ## Get the form data
+    form_data = await request.form()
+
+    ## Update the item
+    for field in editable_fields:
+        item_content["data"][field] = form_data.get(field)
+
+    ## Update the item in the repository
+    github_service.update_repo_content(
+        DATA_REPO, item_file_path, item_content, format="yaml", commit_message=f"Update collection item {collection_id}/{item_id}", sha=item.get("sha"))
+
+    return RedirectResponse(url=f"/collections/{collection_id}/{item_id}", status_code=303)

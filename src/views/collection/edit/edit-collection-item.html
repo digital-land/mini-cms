@@ -4,38 +4,77 @@
 
 {% block content %}
 
-<details>
+<!-- <details class="govuk-details" data-module="govuk-details">
   <summary>Debug</summary>
   <pre class="language-json" style="background-color: #f0f0f0; padding: 10px; border-radius: 5px; font-size: 12px; font-family: monospace;">
     {{ collection.fields | tojson(indent=4) }}
   </pre>
-</details>
+</details> -->
 
 <form action="/collections/{{ collection.id }}/{{ item.id }}" method="post">
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-      <h1 class="govuk-fieldset__heading">
-      Edit {{ item.data[collection.field_map.label] }}
-    </h1>
-  </legend>
-  {% for field in collection.fields %}
-    <div class="govuk-form-group">
-      <label class="govuk-label" for="{{ field.id }}">
-        {{ field.label }}
-      </label>
-      {% if field.type == "text" %}
-        <textarea class="govuk-textarea" id="{{ field.id }}" name="{{ field.id }}">{{ item.data[field.id] }}</textarea>
-      {% elif field.type == "date" %}
-        <input class="govuk-input" id="{{ field.id }}" name="{{ field.id }}" type="date" value="{{ item.data[field.id] }}">
-      {% elif field.type == "repeatable" %}
-        repeatable....
-      {% else %}
-        <input class="govuk-input" id="{{ field.id }}" name="{{ field.id }}" type="text" value="{{ item.data[field.id] }}">
-      {% endif %}
-    </div>
-  {% endfor %}
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-margin-bottom-6">
+      <span class="govuk-caption-l">{{ collection.label }}</span>
+      <h1 class="govuk-fieldset__heading">Edit {{ item.data[collection.field_map.label] }}</h1>
+    </legend>
+    {% for field in collection.fields %}
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="{{ field.id }}">
+          {{ field.label }}
+        </label>
+        {% if field.hint %}
+          <div id="{{ field.id }}-hint" class="govuk-hint">
+            {{ field.hint }}
+          </div>
+        {% endif %}
+        {% if not field.editable and not field.type == "repeatable" %}
+          <p
+            class="govuk-body govuk-!-margin-top-2 govuk-!-font-weight-bold"
+            {% if field.hint %} aria-describedby="{{ field.id }}-hint" {% endif %}>
+            {{ item.data[field.id] }}
+          </p>
+        {% elif field.type == "text" %}
+          <textarea
+            class="govuk-textarea"
+            id="{{ field.id }}"
+            name="{{ field.id }}"
+            rows="5"
+            {% if field.hint %} aria-describedby="{{ field.id }}-hint" {% endif %}
+            {% if field.required %} required {% endif %}
+          >
+            {{ item.data[field.id] }}
+          </textarea>
+        {% elif field.type == "date" %}
+          <input
+            class="govuk-input"
+            id="{{ field.id }}"
+            name="{{ field.id }}"
+            type="date"
+            value="{{ item.data[field.id] }}"
+            {% if field.hint %} aria-describedby="{{ field.id }}-hint" {% endif %}
+            {% if field.required %} required {% endif %}
+          />
+        {% elif field.type == "repeatable" %}
+          <div class="govuk-!-margin-top-3">
+            {% for item in item.data[field.id] %}
+              {% include "collection/_repeatable-field.html" %}
+            {% endfor %}
+          </div>
+        {% else %}
+          <input
+            class="govuk-input"
+            id="{{ field.id }}"
+            name="{{ field.id }}"
+            type="text"
+            value="{{ item.data[field.id] }}"
+            {% if field.hint %} aria-describedby="{{ field.id }}-hint" {% endif %}
+            {% if field.required %} required {% endif %}
+          />
+        {% endif %}
+      </div>
+    {% endfor %}
   </fieldset>
-  <button class="govuk-button" data-module="govuk-button" type="submit">Save</button>
+  <button class="govuk-button" data-module="govuk-button" type="submit">Update {{ item.data[collection.field_map.label] }}</button>
 </form>
 
 {% endblock %}

@@ -10,7 +10,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 # Install system dependencies
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends gcc \
+  && apt-get install -y --no-install-recommends gcc make \
   && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements file

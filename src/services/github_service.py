@@ -15,7 +15,8 @@ class GithubService:
         """
         self.base_url = "https://api.github.com"
         self.headers = {
-            "Accept": "application/vnd.github.v3+json"
+            "Accept": "application/vnd.github.v3+json",
+            "X-GitHub-Api-Version": "2022-11-28"
         }
         if access_token:
             self.headers["Authorization"] = f"Bearer {access_token}"
@@ -158,12 +159,7 @@ class GithubService:
         elif format == "json":
             content = json.dumps(content)
 
-        print(json.dumps({
-            "headers": self.headers,
-            "url": f"{self.base_url}/repos/{repo}/contents/{path.strip('/')}",
-        }, indent=4))
-
-        response = requests.post(
+        response = requests.put(
             f"{self.base_url}/repos/{repo}/contents/{path.strip('/')}",
             headers=self.headers,
             json={

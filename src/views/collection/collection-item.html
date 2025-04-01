@@ -34,7 +34,7 @@
       <h2 class="govuk-heading-m">{{ field.label }}</h2>
 
       {% for repeatable_item in item.data[field.id] %}
-        {% include "collection/_repeatable-field.html" %}
+        {% include "components/form/repeatable-field.html" %}
       {% endfor %}
     {% endfor %}
   </div>

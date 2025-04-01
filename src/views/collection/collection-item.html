@@ -33,7 +33,7 @@
     {% for field in collection.fields if field.type in ['repeatable'] %}
       <h2 class="govuk-heading-m">{{ field.label }}</h2>
 
-      {% for item in item.data[field.id] %}
+      {% for repeatable_item in item.data[field.id] %}
         {% include "collection/_repeatable-field.html" %}
       {% endfor %}
     {% endfor %}

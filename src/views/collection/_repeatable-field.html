@@ -1,15 +1,15 @@
 <div class="govuk-summary-card">
   <div class="govuk-summary-card__title-wrapper">
     <h2 class="govuk-summary-card__title">
-      {% if item[field.field_map.label] %}
-        {{ item[field.field_map.label] }} ({{ item[field.field_map.id] }})
+      {% if repeatable_item[field.field_map.label] %}
+        {{ repeatable_item[field.field_map.label] }} ({{ repeatable_item[field.field_map.id] }})
       {% else %}
-        {{ item[field.field_map.id] }}
+        {{ repeatable_item[field.field_map.id] }}
       {% endif %}
     </h2>
     <ul class="govuk-summary-card__actions">
       <li class="govuk-summary-card__action">
-        <a class="govuk-link" href="#">Edit<span class="govuk-visually-hidden"> {{ field.label_single }}</span></a>
+        <a class="govuk-link" href="/collections/{{ collection.id }}/{{ item.id }}/sub-item/{{ field.id }}/{{ repeatable_item[field.field_map.id] }}/edit">Edit<span class="govuk-visually-hidden"> {{ field.label_single }}</span></a>
       </li>
     </ul>
   </div>
@@ -19,7 +19,7 @@
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key">{{ subfield.label }}</dt>
       <dd class="govuk-summary-list__value">
-        {% set value=item[subfield.id] %}
+        {% set value=repeatable_item[subfield.id] %}
         {% set field=subfield %}
         {% if value and value is sequence and value is not string %}
           {{ value | length }} {{ field.label | lower }}

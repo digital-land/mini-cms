@@ -56,7 +56,7 @@
           />
         {% elif field.type == "repeatable" %}
           <div class="govuk-!-margin-top-3">
-            {% for item in item.data[field.id] %}
+            {% for repeatable_item in item.data[field.id] %}
               {% include "collection/_repeatable-field.html" %}
             {% endfor %}
           </div>

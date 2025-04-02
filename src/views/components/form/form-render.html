@@ -28,9 +28,7 @@
             rows="5"
             {% if field.hint %} aria-describedby="{{ field.id }}-hint" {% endif %}
             {% if field.required %} required {% endif %}
-          >
-            {{ data[field.id] }}
-          </textarea>
+          >{{ data[field.id] }}</textarea>
         {% elif field.type == "date" %}
           <input
             class="govuk-input"

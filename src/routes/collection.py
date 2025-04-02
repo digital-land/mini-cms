@@ -148,12 +148,18 @@ async def edit_repeatable_item(
 
     # Get the repeatable field
     # @todo: This only works for 2 levels deep
-    [fieldId, fieldItemIndex] = field_path.split("/")
+    field_parts = field_path.split("/")
 
     repeatable_field = next((f for f in collection.get(
-        "fields", []) if f.get("id") == fieldId), None)
+        "fields", []) if f.get("id") == field_parts[0]), None)
     repeatable_field_data = item.get("data", {}).get(
-        repeatable_field.get("id"), [])[int(fieldItemIndex)]
+        repeatable_field.get("id"), [])[int(field_parts[1])]
+
+    if (len(field_parts) > 2):
+        repeatable_field = next((f for f in repeatable_field.get(
+            "fields", []) if f.get("id") == field_parts[2]), None)
+        repeatable_field_data = repeatable_field_data.get(field_parts[2], {})[int(field_parts[3])]
+
 
     return views.TemplateResponse(
         request=request,

@@ -1,0 +1,20 @@
+<div class="app-content-list govuk-!-margin-bottom-8">
+  <ul class="app-content-list__list">
+    {% for item in items %}
+    <li class="app-content-list__list-item">
+      <div class="app-content-list__list-item-wrapper">
+        <h3 class="app-content-list__sub-heading">
+          <a class="app-content-list__link" href="{{ item.url }}">
+            <div class="app-content-list__link-text">{{ item.title }}</div>
+            {% if item.description %}
+            <div class="app-content-list__description app-content-list__link-description">
+              {{ item.description }}
+            </div>
+            {% endif %}
+          </a>
+        </h3>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>

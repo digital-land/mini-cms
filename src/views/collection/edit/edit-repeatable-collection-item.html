@@ -4,14 +4,16 @@
 
 {% block content %}
 
-{% set label = item.data[collection.field_map.label] %}
-{% with action="/collections/" + collection.id + "/" + item.id + "/update",
+{% set label = repeatable_field_data[repeatable_field.field_map.label] %}
+{% with action="/collections/" + collection.id + "/" + item.id + "/update/fields/" + field_path,
          method="post",
          caption=collection.label,
          label=label,
          heading="Edit " + label,
-         fields=collection.fields,
-         data=item.data %}
+         fields=repeatable_field.fields,
+         data=repeatable_field_data,
+         field_path=field_path
+%}
   {% include "components/form/form-render.html" %}
 {% endwith %}
 

@@ -106,7 +106,7 @@ class GithubService:
             requests.exceptions.RequestException: If the API request fails
         """
         response = requests.get(
-            f"{self.base_url}/repos/{repo}/contents/{path}",
+            f"{self.base_url}/repos/{repo}/contents/{path.strip('/')}",
             headers=self.headers
         )
         response.raise_for_status()
@@ -142,7 +142,7 @@ class GithubService:
         response.raise_for_status()
         return response.json()
 
-    def update_repo_content(self, repo: str, path: str, content: dict, format: str  = "yaml", commit_message: str = "Update content", sha: str = None) -> None:
+    def update_repo_content(self, repo: str, path: str, content: dict, format: str = "yaml", commit_message: str = "Update content", sha: str = None) -> None:
         """
         Update the contents of a file at a specific path in a repository.
 

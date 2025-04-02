@@ -9,7 +9,7 @@
     </h2>
     <ul class="govuk-summary-card__actions">
       <li class="govuk-summary-card__action">
-        <a class="govuk-link" href="/collections/{{ collection.id }}/{{ item.id }}/fields/{{ field.id }}/{{ repeatable_item[field.field_map.id] }}/edit">Edit<span class="govuk-visually-hidden"> {{ field.label_single }}</span></a>
+        <a class="govuk-link" href="/collections/{{ collection.id }}/{{ item.id }}/edit/fields/{% if field_path %}{{ field_path }}/{% endif %}{{ field.id }}/{{ repeatable_item_index }}">Edit<span class="govuk-visually-hidden"> {{ field.label_single }}</span></a>
       </li>
     </ul>
   </div>

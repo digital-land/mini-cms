@@ -2,7 +2,7 @@
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-margin-bottom-6">
       <span class="govuk-caption-l">{{ caption }}</span>
-      <h1 class="govuk-fieldset__heading">{{ heading }}</h1>
+      <h1 class="govuk-fieldset__heading">Edit {{ label }}</h1>
     </legend>
     {% for field in fields %}
       <div class="govuk-form-group">
@@ -18,7 +18,7 @@
           <p
             class="govuk-body govuk-!-margin-top-2 govuk-!-font-weight-bold"
             {% if field.hint %} aria-describedby="{{ field.id }}-hint" {% endif %}>
-            {{ item.data[field.id] }}
+            {{ data[field.id] }}
           </p>
         {% elif field.type == "text" %}
           <textarea
@@ -29,7 +29,7 @@
             {% if field.hint %} aria-describedby="{{ field.id }}-hint" {% endif %}
             {% if field.required %} required {% endif %}
           >
-            {{ item.data[field.id] }}
+            {{ data[field.id] }}
           </textarea>
         {% elif field.type == "date" %}
           <input
@@ -37,13 +37,14 @@
             id="{{ field.id }}"
             name="{{ field.id }}"
             type="date"
-            value="{{ item.data[field.id] }}"
+            value="{{ data[field.id] }}"
             {% if field.hint %} aria-describedby="{{ field.id }}-hint" {% endif %}
             {% if field.required %} required {% endif %}
           />
         {% elif field.type == "repeatable" %}
           <div class="govuk-!-margin-top-3">
-            {% for repeatable_item in item.data[field.id] %}
+            {% for repeatable_item in data[field.id] %}
+              {% set repeatable_item_index = loop.index0 %}
               {% include "components/form/repeatable-field.html" %}
             {% endfor %}
           </div>
@@ -53,7 +54,7 @@
             id="{{ field.id }}"
             name="{{ field.id }}"
             type="text"
-            value="{{ item.data[field.id] }}"
+            value="{{ data[field.id] }}"
             {% if field.hint %} aria-describedby="{{ field.id }}-hint" {% endif %}
             {% if field.required %} required {% endif %}
           />
@@ -61,5 +62,5 @@
       </div>
     {% endfor %}
   </fieldset>
-  <button class="govuk-button" data-module="govuk-button" type="submit">Update {{ item.data[collection.field_map.label] }}</button>
+  <button class="govuk-button" data-module="govuk-button" type="submit">Update {{ label }}</button>
 </form>

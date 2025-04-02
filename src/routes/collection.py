@@ -10,13 +10,15 @@ DATA_REPO = os.environ.get("DATA_REPO", "")  # Format: owner/repo
 router = APIRouter()
 views = Jinja2Templates(directory="src/views")
 
+
 @router.get("/{collection_id}")
 async def index(request: Request, user: dict = Depends(get_current_user), collection_id: str = Path(..., description="The ID of the collection to retrieve")):
     github_service = GithubService(access_token=user.get("access_token"))
     data_config = github_service.get_repo_content_for_path(
         DATA_REPO, "config.yml", format="yaml")
     config = data_config.get("collections", [])
-    collection = next((c for c in config if c.get("id") == collection_id), None)
+    collection = next(
+        (c for c in config if c.get("id") == collection_id), None)
 
     if not collection:
         raise HTTPException(status_code=404, detail="Collection not found")
@@ -32,7 +34,8 @@ async def index(request: Request, user: dict = Depends(get_current_user), collec
         print(e)
 
     # Filter out directories
-    items = [item for item in items if item.get("type") == "file" and (item.get("name").endswith(".yml") or item.get("name").endswith(".yaml"))]
+    items = [item for item in items if item.get("type") == "file" and (
+        item.get("name").endswith(".yml") or item.get("name").endswith(".yaml"))]
 
     # Transform items to get their content
     items = list(map(
@@ -46,12 +49,14 @@ async def index(request: Request, user: dict = Depends(get_current_user), collec
         request=request, name="collection/collection.html", context={"user": user, "collection": collection, "items": items}
     )
 
+
 @router.get("/{collection_id}/{item_id}")
 async def item(
-    request: Request,
-    user: dict = Depends(get_current_user),
-    collection_id: str = Path(..., description="The ID of the collection to retrieve"),
-    item_id: str = Path(..., description="The ID of the item to retrieve")):
+        request: Request,
+        user: dict = Depends(get_current_user),
+        collection_id: str = Path(...,
+                                  description="The ID of the collection to retrieve"),
+        item_id: str = Path(..., description="The ID of the item to retrieve")):
 
     github_service = GithubService(access_token=user.get("access_token"))
     collection = next((c for c in github_service.get_repo_content_for_path(
@@ -65,12 +70,14 @@ async def item(
         context={"user": user, "item": item, "collection": collection}
     )
 
+
 @router.get("/{collection_id}/{item_id}/edit")
 async def edit_item(
-    request: Request,
-    user: dict = Depends(get_current_user),
-    collection_id: str = Path(..., description="The ID of the collection to retrieve"),
-    item_id: str = Path(..., description="The ID of the item to retrieve")):
+        request: Request,
+        user: dict = Depends(get_current_user),
+        collection_id: str = Path(...,
+                                  description="The ID of the collection to retrieve"),
+        item_id: str = Path(..., description="The ID of the item to retrieve")):
 
     github_service = GithubService(access_token=user.get("access_token"))
     collection = next((c for c in github_service.get_repo_content_for_path(
@@ -84,37 +91,78 @@ async def edit_item(
         context={"user": user, "item": item, "collection": collection}
     )
 
+
 @router.post("/{collection_id}/{item_id}/update")
 async def update_item(
-    request: Request,
-    user: dict = Depends(get_current_user),
-    collection_id: str = Path(..., description="The ID of the collection to retrieve"),
-    item_id: str = Path(..., description="The ID of the item to retrieve")):
+        request: Request,
+        user: dict = Depends(get_current_user),
+        collection_id: str = Path(...,
+                                  description="The ID of the collection to retrieve"),
+        item_id: str = Path(..., description="The ID of the item to retrieve")):
     item_file_path = f"/data/collections/{collection_id}/{item_id}.yml"
 
-    ## Get the collection
+    # Get the collection
     github_service = GithubService(access_token=user.get("access_token"))
     collection = next((c for c in github_service.get_repo_content_for_path(
         DATA_REPO, f"/config.yml", format="yaml").get("collections", []) if c.get("id") == collection_id), None)
 
-    ## Get the collection item
+    # Get the collection item
     item = github_service.get_repo_content_for_path(
         DATA_REPO, item_file_path, format="yaml", get_sha=True)
 
     item_content = item.get("content")
 
-    ## Get the editable fields
-    editable_fields = [field.get("id") for field in collection.get("fields", []) if field.get("editable")]
+    # Get the editable fields
+    editable_fields = [field.get("id") for field in collection.get(
+        "fields", []) if field.get("editable")]
 
-    ## Get the form data
+    # Get the form data
     form_data = await request.form()
 
-    ## Update the item
+    # Update the item
     for field in editable_fields:
         item_content["data"][field] = form_data.get(field)
 
-    ## Update the item in the repository
+    # Update the item in the repository
     github_service.update_repo_content(
         DATA_REPO, item_file_path, item_content, format="yaml", commit_message=f"Update collection item {collection_id}/{item_id}", sha=item.get("sha"))
 
     return RedirectResponse(url=f"/collections/{collection_id}/{item_id}", status_code=303)
+
+
+@router.get("/{collection_id}/{item_id}/edit/fields/{field_path:path}")
+async def edit_repeatable_item(
+    request: Request,
+    user: dict = Depends(get_current_user),
+    collection_id: str = Path(...,
+                              description="The ID of the collection to retrieve"),
+    item_id: str = Path(..., description="The ID of the item to retrieve"),
+    field_path: str = Path(...,
+                           description="The path of the field to retrieve")):
+
+    github_service = GithubService(access_token=user.get("access_token"))
+    collection = next((c for c in github_service.get_repo_content_for_path(
+        DATA_REPO, f"/config.yml", format="yaml").get("collections", []) if c.get("id") == collection_id), None)
+    item = github_service.get_repo_content_for_path(
+        DATA_REPO, f"/data/collections/{collection_id}/{item_id}.yml", format="yaml")
+
+    # Get the repeatable field
+    # @todo: This only works for 2 levels deep
+    [fieldId, fieldItemIndex] = field_path.split("/")
+
+    repeatable_field = next((f for f in collection.get(
+        "fields", []) if f.get("id") == fieldId), None)
+    repeatable_field_data = item.get("data", {}).get(
+        repeatable_field.get("id"), [])[int(fieldItemIndex)]
+
+    return views.TemplateResponse(
+        request=request,
+        name="collection/edit/edit-repeatable-collection-item.html",
+        context={
+            "user": user,
+            "item": item,
+            "collection": collection,
+            "field_path": field_path,
+            "repeatable_field": repeatable_field,
+            "repeatable_field_data": repeatable_field_data}
+    )

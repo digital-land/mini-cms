@@ -13,9 +13,9 @@ block content %}
 
     <h2 class="govuk-heading-l">Collections</h2>
 
-    {% with items = [] %}
+    {% with content_list = [] %}
       {% for item in collections %}
-        {% set _ = items.append({
+        {% set _ = content_list.append({
           'title': item.label,
           'url': '/collections/' + item.id,
           'description': item.description

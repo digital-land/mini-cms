@@ -13,21 +13,20 @@
     {% endif %}
 
     <h2 class="govuk-heading-l">Items</h2>
+
     {% if items and items|length > 0 %}
-    <ul class="govuk-list govuk-list--bullet">
-      {% for item in items %}
-      <li>
-        <a
-          href="/collections/{{ collection.id }}/{{ item.id }}"
-          class="govuk-link"
-        >
-          {{ item.data[collection.field_map.label] }} ({{ item.data[collection.field_map.id] }})
-        </a>
-      </li>
-      {% endfor %}
-    </ul>
+      {% with content_list = [] %}
+        {% for item in items %}
+          {% set _ = content_list.append({
+            'title': item.data[collection.field_map.label],
+            'url': '/collections/' + collection.id + '/' + item.data[collection.field_map.id],
+            'description': item.data[collection.field_map.id]
+          }) %}
+        {% endfor %}
+        {% include "components/content-list.html" %}
+      {% endwith %}
     {% else %}
-    <p class="govuk-body">No items found</p>
+      <p class="govuk-body">No items found</p>
     {% endif %}
   </div>
 </div>

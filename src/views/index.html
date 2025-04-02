@@ -13,16 +13,16 @@ block content %}
 
     <h2 class="govuk-heading-l">Collections</h2>
 
-
-    {% set items = [] %}
-    {% for item in collections %}
-      {% set _ = items.append({
-        'title': item.label,
-        'url': '/collections/' + item.id,
-        'description': item.description
-      }) %}
-    {% endfor %}
-    {% include "components/content-list.html" %}
+    {% with items = [] %}
+      {% for item in collections %}
+        {% set _ = items.append({
+          'title': item.label,
+          'url': '/collections/' + item.id,
+          'description': item.description
+        }) %}
+      {% endfor %}
+      {% include "components/content-list.html" %}
+    {% endwith %}
   </div>
 </div>
 

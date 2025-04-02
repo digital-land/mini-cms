@@ -172,3 +172,64 @@ async def edit_repeatable_item(
             "repeatable_field": repeatable_field,
             "repeatable_field_data": repeatable_field_data}
     )
+
+@router.post("/{collection_id}/{item_id}/update/fields/{field_path:path}")
+async def update_repeatable_item(
+    request: Request,
+    user: dict = Depends(get_current_user),
+    collection_id: str = Path(...,
+                              description="The ID of the collection to retrieve"),
+    item_id: str = Path(..., description="The ID of the item to retrieve"),
+    field_path: str = Path(...,
+                           description="The path of the field to retrieve")):
+
+    item_file_path = f"/data/collections/{collection_id}/{item_id}.yml"
+    github_service = GithubService(access_token=user.get("access_token"))
+    collection = next((c for c in github_service.get_repo_content_for_path(
+        DATA_REPO, f"/config.yml", format="yaml").get("collections", []) if c.get("id") == collection_id), None)
+    item = github_service.get_repo_content_for_path(
+        DATA_REPO, item_file_path, format="yaml", get_sha=True)
+
+    item_content = item.get("content")
+
+    # Get the form data
+    form_data = await request.form()
+
+    # Get the repeatable field
+    # @todo: This only works for 2 levels deep
+    field_parts = field_path.split("/")
+
+    repeatable_field = next((f for f in collection.get(
+        "fields", []) if f.get("id") == field_parts[0]), None)
+    repeatable_field_data = item_content.get("data", {}).get(
+        repeatable_field.get("id"), [])[int(field_parts[1])]
+
+    if (len(field_parts) > 2):
+        repeatable_field = next((f for f in repeatable_field.get(
+            "fields", []) if f.get("id") == field_parts[2]), None)
+        repeatable_field_data = repeatable_field_data.get(field_parts[2], {})[int(field_parts[3])]
+
+    if (len(field_parts) == 2):
+        editable_fields = [field.get("id") for field in repeatable_field.get(
+            "fields", []) if field.get("editable")]
+
+        # Update the repeatable field data
+        for field in editable_fields:
+            repeatable_field_data[field] = form_data.get(field)
+
+        item_content["data"][field_parts[0]][int(field_parts[1])] = repeatable_field_data
+    elif (len(field_parts) == 4):
+        editable_fields = [field.get("id") for field in repeatable_field.get(
+            "fields", []) if field.get("editable")]
+
+        # Update the repeatable field data
+        for field in editable_fields:
+            repeatable_field_data[field] = form_data.get(field)
+
+        item_content["data"][field_parts[0]][int(field_parts[1])][field_parts[2]][int(field_parts[3])] = repeatable_field_data
+
+    # Update the item in the repository
+    github_service.update_repo_content(
+        DATA_REPO, item_file_path, item_content, format="yaml", commit_message=f"Update collection item {collection_id}/{item_id}", sha=item.get("sha"))
+
+    return RedirectResponse(url=f"/collections/{collection_id}/{item_id}/edit/fields/{field_path}", status_code=303)

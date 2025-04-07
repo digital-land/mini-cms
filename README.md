@@ -1,18 +1,19 @@
 # Mini CMS
 
-A headless git based CMS for managing content for guidance pages.
+A headless git based CMS for managing content.
 
 ## Features
 
-- [ ] Add a new page
-- [ ] Edit a page
-- [ ] Delete a page
-- [ ] View a page
-- [ ] View a page history
-- [ ] Rollback to a previous version of a page
-- [ ] Add a new version of a page
-- [ ] Edit a version of a page
-- [ ] Delete a version of a page
+- [ ] Add a new content item
+- [x] Edit a content item
+- [ ] Delete a content item
+- [x] View a content item
+- [ ] View a content item history
+- [ ] Rollback to a previous version of a content item
+- [ ] Add a new version of a content item
+- [ ] Edit a version of a content item
+- [ ] Delete a version of a content item
+- [ ] API - Retrieve content item
 
 ## Getting Started
 
@@ -65,52 +66,20 @@ The application will be available at `http://localhost:8000` in both cases.
   docker compose exec web <command>
   ```
 
-## API
+## Setting up a Github Application
 
-The API is available at `http://localhost:8000`
+The Mini CMS platform uses Github as it's storage and authentication. To ensure that the correct permissions are requested, we require a Github App to be set up.
 
-### Collections
-
-#### Get all collections
-
-```bash
-curl -X GET "http://localhost:8000/collections"
-```
-
-#### Get a collection by id
-
-```bash
-curl -X GET "http://localhost:8000/collections/{collection_id}"
-```
-
-### Collection Content Items
-
-#### Get all content items for a collection
-
-```bash
-curl -X GET "http://localhost:8000/collections/{collection_id}/content-items"
-```
-
-#### Get a content item by id
-
-```bash
-curl -X GET "http://localhost:8000/collections/{collection_id}/content-items/{content_item_id}"
-```
-
-#### Create a new content item
-
-```bash
-curl -X POST "http://localhost:8000/collections/{collection_id}/content-items" -H "Content-Type: application/json" -d '{"title": "My Content Item", "body": "This is my content item"}'
-```
-
-#### Update a content item
-
-```bash
-curl -X PUT "http://localhost:8000/collections/{collection_id}/content-items/{content_item_id}" -H "Content-Type: application/json" -d '{"title": "My Content Item", "body": "This is my content item"}'
-```
-
-#### Delete a content item
-
-```bash
-curl -X DELETE "http://localhost:8000/collections/{collection_id}/content-items/{content_item_id}"
-```
+To set up an application, do the following:
+1. Get these from GitHub > Settings > Developer settings > Github Apps (https://github.com/settings/apps)
+2. Create a new application with the following configuration:
+   - Homepage URL = https://www.your-mini-cms-url/
+   - Callback URL = https://www.your-mini-cms-url/auth/callback
+   - Request user authorization (OAuth) during installation = CHECKED
+   - Permissions & events:
+      - Repository Permissions:
+         - Metadata = READ ONLY
+         - Contents = READ AND WRITE
+      - Account Permissions:
+         - Email Addresses = READ ONLY
+   - Install app = Select `MINI-CMS-DATA` Repo

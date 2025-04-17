@@ -5,5 +5,8 @@ $govuk-fonts-path: "#{$govuk-assets-path}fonts/";
 // Import GOV.UK Frontend
 @use "govuk-frontend/dist/govuk" as govuk;
 
+// Import govspeak-visual-editor
+@use "govspeak-visual-editor/dist/style";
+
 // Import components
 @use "./components/content-list" as *;

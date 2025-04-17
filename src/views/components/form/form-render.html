@@ -62,3 +62,73 @@
   </fieldset>
   <button class="govuk-button" data-module="govuk-button" type="submit">Update {{ label }}</button>
 </form>
+
+<div id="content" hidden>
+  <p>Hello world, this is the ProseMirror editor.</p>
+  <p><a href="example.com">Example link</a></p>
+  <p><a href="mailto:someone@example.com">someone@example.com</a></p>
+  <h2>This is an H2 heading</h2>
+  <h3>This is an H3 heading</h3>
+  <ol>
+    <li><p>First</p></li>
+    <li><p>Second</p></li>
+    <li><p>Third</p></li>
+  </ol>
+  <ul>
+    <li><p>One</p></li>
+    <li><p>Two</p></li>
+    <li><p>Three</p></li>
+  </ul>
+  <ol class="steps">
+    <li><p>Step 1</p></li>
+    <li><p>Step 2</p></li>
+    <li><p>Step 3</p></li>
+  </ol>
+  <div class="call-to-action">
+    <p>Call to action</p>
+  </div>
+  <div
+    role="note"
+    aria-label="Warning"
+    class="application-notice help-notice"
+  >
+    <p>This is a warning callout</p>
+  </div>
+  <div
+    role="note"
+    aria-label="Information"
+    class="application-notice info-notice"
+  >
+    <p>This is an information callout</p>
+  </div>
+  <div class="example">
+    <p>
+      This is an example callout
+      <br /><br />
+      That works on multiple lines
+    </p>
+  </div>
+  <div role="address" aria-label="Address" class="address">
+    <p>
+      HM Revenue and Customs
+      <br />
+      Bradford
+      <br />
+      BD98 1YY
+    </p>
+  </div>
+  <div role="contact" aria-label="Contact" class="contact">
+    <p>
+      This is a contact
+      <br />
+      Financial Conduct Authority
+      <br />
+      Telephone: 0800 111 6768
+      <br />
+      Monday to Friday, 8am to 6pm
+    </p>
+  </div>
+</div>
+
+<div id="editor"></div>
+<textarea id="govspeak"></textarea>

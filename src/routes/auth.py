@@ -6,8 +6,8 @@ from src.services.github_service import GithubService
 
 # Load environment variables
 HOST = os.environ["APP_HOST"]
-CLIENT_ID = os.environ["CLIENT_ID"]
-CLIENT_SECRET = os.environ["CLIENT_SECRET"]
+CLIENT_ID = os.environ["GITHUB_CLIENT_ID"]
+CLIENT_SECRET = os.environ["GITHUB_CLIENT_SECRET"]
 DATA_REPO = os.environ.get("DATA_REPO", "")  # Format: owner/repo
 
 router = APIRouter()

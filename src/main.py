@@ -11,12 +11,12 @@ from src.routes.collection import router as collection_router
 # Load environment variables from .env file
 load_dotenv()
 
-HOST = os.environ["APP_HOST"]
+APP_HOST = os.environ["APP_HOST"]
 DATA_REPO = os.environ.get("DATA_REPO", "")  # Format: owner/repo
 # You should set this in .env
 SECRET_KEY = os.environ.get("APP_KEY", "your-secret-key")
 
-app = FastAPI()
+app = FastAPI(servers=[{"url": APP_HOST}])
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 
 # Mount static files

@@ -5,7 +5,7 @@ from fastapi_sso.sso.github import GithubSSO
 from src.services.github_service import GithubService
 
 # Load environment variables
-HOST = os.environ["APP_HOST"]
+APP_HOST = os.environ["APP_HOST"]
 CLIENT_ID = os.environ["GITHUB_CLIENT_ID"]
 CLIENT_SECRET = os.environ["GITHUB_CLIENT_SECRET"]
 DATA_REPO = os.environ.get("DATA_REPO", "")  # Format: owner/repo
@@ -15,8 +15,8 @@ router = APIRouter()
 sso = GithubSSO(
     client_id=CLIENT_ID,
     client_secret=CLIENT_SECRET,
-    redirect_uri=f"{HOST}/auth/callback",
-    allow_insecure_http=HOST.startswith("http://localhost"),
+    redirect_uri=f"{APP_HOST}/auth/callback",
+    allow_insecure_http=APP_HOST.startswith("http://localhost"),
 )
 
 

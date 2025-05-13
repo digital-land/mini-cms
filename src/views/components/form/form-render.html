@@ -26,6 +26,8 @@
               </span>
             {% endif %}
           </p>
+        {% elif field.type == "govspeak" %}
+          {% include "components/form/govuk-visual-editor.html" %}
         {% elif field.type == "text" %}
           <textarea
             class="govuk-textarea"

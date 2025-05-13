@@ -1,0 +1,17 @@
+<div id="field-{{ field.id }}-content" class="govuk-visually-hidden">
+  {{ data[field.id] | markdown_to_html | safe }}
+</div>
+
+<div id="field-{{ field.id }}-editor"></div>
+
+<textarea id="field-{{ field.id }}-govspeak" name="{{ field.id }}" class="govuk-visually-hidden"></textarea>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    new GovspeakVisualEditor(
+      document.querySelector("#field-{{ field.id }}-content"),
+      document.querySelector("#field-{{ field.id }}-editor"),
+      document.querySelector("#field-{{ field.id }}-govspeak")
+    );
+  });
+</script>

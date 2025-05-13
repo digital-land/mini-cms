@@ -157,7 +157,7 @@ async def update_item(
     )
 
     item_content = item.get("content")
-    editable_fields = [field.get("id") for field in collection.get("fields", []) if field.get("editable")]
+    editable_fields = [field.get("id") for field in collection.get("fields", []) if field.get("editable") and field.get("editable") == True]
     form_data = await request.form()
 
     for field in editable_fields:
@@ -226,7 +226,7 @@ async def update_repeatable_item(
     field, field_parts = get_field_by_path(collection, field_path)
 
     # Get editable fields
-    editable_fields = [f.get("id") for f in field.get("fields", []) if f.get("editable")]
+    editable_fields = [f.get("id") for f in field.get("fields", []) if f.get("editable") and f.get("editable") == True]
 
     # Get current field data
     repeatable_field_data = get_field_data(item_content, field_parts)

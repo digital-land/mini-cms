@@ -19,6 +19,12 @@
             class="govuk-body govuk-!-margin-top-2 govuk-!-font-weight-bold"
             {% if field.hint %} aria-describedby="{{ field.id }}-hint" {% endif %}>
             {{ data[field.id] }}
+
+            {% if data[field.id] == "" %}
+              <span class="govuk-body-s govuk-!-font-weight-normal">
+                <i>No value set</i>
+              </span>
+            {% endif %}
           </p>
         {% elif field.type == "text" %}
           <textarea

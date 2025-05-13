@@ -7,3 +7,11 @@ $govuk-fonts-path: "#{$govuk-assets-path}fonts/";
 
 // Import components
 @use "./components/content-list" as *;
+
+// Import govspeak-visual-editor
+@use "govspeak-visual-editor/dist/style.css";
+
+// Set the font family for the govspeak visual editor
+.govspeak.visual-editor__contenteditable {
+  font-family: "GDS Transport", Helvetica, sans-serif;
+}

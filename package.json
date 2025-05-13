@@ -12,6 +12,7 @@
     "node": "20.x"
   },
   "dependencies": {
+    "govspeak-visual-editor": "^3.0.0",
     "govuk-frontend": "^5.9.0"
   },
   "devDependencies": {

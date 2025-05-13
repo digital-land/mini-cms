@@ -8,39 +8,17 @@ from fastapi.staticfiles import StaticFiles
 from src.services.github_service import GithubService
 from src.routes.auth import router as auth_router, get_current_user
 from src.routes.collection import router as collection_router
+from src.templates import views, APP_HOST  # Import views from the new module
+
 # Load environment variables from .env file
 load_dotenv()
 
-APP_HOST = os.environ["APP_HOST"]
 DATA_REPO = os.environ.get("DATA_REPO", "")  # Format: owner/repo
 # You should set this in .env
 SECRET_KEY = os.environ.get("APP_KEY", "your-secret-key")
 
 app = FastAPI(servers=[{"url": APP_HOST}])
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
-
-views = Jinja2Templates(directory="src/views")
-
-def secure_url_for(request: Request, name: str, **path_params: str) -> str:
-    """Generate a secure URL for a given route name.
-
-    Args:
-        request: The FastAPI request object
-        name: The route name
-        **path_params: Path parameters for the route
-
-    Returns:
-        A secure URL string (https://)
-    """
-    url = request.url_for(name, **path_params)
-
-    # Check if APP_HOST is https
-    if APP_HOST.startswith("https://"):
-        return str(url).replace("http://", "https://")
-
-    return str(url)
-
-views.env.globals["secure_url_for"] = secure_url_for
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="src/static/dist"), name="static")

@@ -2,6 +2,7 @@ from fastapi import APIRouter, Request, Depends, Path, HTTPException
 from fastapi.responses import RedirectResponse
 from src.routes.auth import get_current_user
 from src.services.github_service import GithubService
+from src.templates import views
 import os
 from fastapi.templating import Jinja2Templates
 from typing import Dict, List, Any, Tuple
@@ -9,8 +10,6 @@ from typing import Dict, List, Any, Tuple
 DATA_REPO = os.environ.get("DATA_REPO", "")  # Format: owner/repo
 
 router = APIRouter()
-views = Jinja2Templates(directory="src/views")
-
 
 def get_collection(github_service: GithubService, collection_id: str) -> Dict:
     """Get collection configuration by ID."""

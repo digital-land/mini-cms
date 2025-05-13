@@ -19,12 +19,33 @@ SECRET_KEY = os.environ.get("APP_KEY", "your-secret-key")
 app = FastAPI(servers=[{"url": APP_HOST}])
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 
+views = Jinja2Templates(directory="src/views")
+
+def secure_url_for(request: Request, name: str, **path_params: str) -> str:
+    """Generate a secure URL for a given route name.
+
+    Args:
+        request: The FastAPI request object
+        name: The route name
+        **path_params: Path parameters for the route
+
+    Returns:
+        A secure URL string (https://)
+    """
+    url = request.url_for(name, **path_params)
+
+    # Check if APP_HOST is https
+    if APP_HOST.startswith("https://"):
+        return str(url).replace("http://", "https://")
+
+    return str(url)
+
+views.env.globals["secure_url_for"] = secure_url_for
+
 # Mount static files
 app.mount("/static", StaticFiles(directory="src/static/dist"), name="static")
 app.mount("/assets", StaticFiles(directory="src/static/assets"),
           name="static_assets")
-
-views = Jinja2Templates(directory="src/views")
 
 # Include auth routes
 app.include_router(auth_router, prefix="/auth", tags=["auth"])

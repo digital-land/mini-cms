@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from fastapi.templating import Jinja2Templates
 from fastapi import Request
 import os
+import markdown
 
 load_dotenv()
 APP_HOST = os.environ["APP_HOST"]
@@ -28,3 +29,15 @@ def secure_url_for(request: Request, name: str, **path_params: str) -> str:
 
 views.env.globals["secure_url_for"] = secure_url_for
 
+def markdown_to_html(text: str) -> str:
+    """Convert Markdown to HTML.
+
+    Args:
+        text: The Markdown text to convert
+
+    Returns:
+        The HTML string
+    """
+    return markdown.markdown(text)
+
+views.env.filters["markdown_to_html"] = markdown_to_html

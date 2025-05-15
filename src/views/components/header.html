@@ -1,4 +1,4 @@
-<header class="govuk-header" data-module="govuk-header">
+<header class="govuk-header govuk-header--full-width-border" data-module="govuk-header">
   <div class="govuk-header__container govuk-width-container">
     <div class="govuk-header__logo">
       <a href="/" class="govuk-header__link govuk-header__link--homepage">
@@ -20,17 +20,31 @@
       </a>
     </div>
   </div>
-  <section
-    aria-label="Service information"
-    class="govuk-service-navigation"
-    data-module="govuk-service-navigation"
-  >
-    <div class="govuk-width-container">
-      <div class="govuk-service-navigation__container">
-        <span class="govuk-service-navigation__service-name">
-          <a href="/" class="govuk-service-navigation__link">Mini CMS</a>
-        </span>
-      </div>
-    </div>
-  </section>
 </header>
+
+<section
+aria-label="Service information"
+class="govuk-service-navigation"
+data-module="govuk-service-navigation"
+>
+<div class="govuk-width-container">
+  <div class="govuk-service-navigation__container">
+    <span class="govuk-service-navigation__service-name">
+      <a href="/" class="govuk-service-navigation__link">Mini CMS</a>
+    </span>
+    <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+      <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+        Menu
+      </button>
+      <ul class="govuk-service-navigation__list" id="navigation">
+        <li class="govuk-service-navigation__item">
+          Signed in as {{ get_session_data(request).user.display_name }}
+        </li>
+        <li class="govuk-service-navigation__item">
+          <a class="govuk-service-navigation__link" href="/auth/logout">Sign out</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+</section>

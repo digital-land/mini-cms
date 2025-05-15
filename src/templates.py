@@ -29,6 +29,20 @@ def secure_url_for(request: Request, name: str, **path_params: str) -> str:
 
 views.env.globals["secure_url_for"] = secure_url_for
 
+def get_session_data(request: Request) -> dict:
+    """Get the session data from the request.
+
+    Args:
+        request: The FastAPI request object
+
+    Returns:
+        The session data
+    """
+    print(request.session)
+    return request.session
+
+views.env.globals["get_session_data"] = get_session_data
+
 def markdown_to_html(text: str) -> str:
     """Convert Markdown to HTML.
 

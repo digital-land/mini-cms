@@ -8,6 +8,7 @@
       href="{{ secure_url_for(request, 'static', path='/css/main.css') }}"
       rel="stylesheet"
     />
+    <link rel="icon" href="{{ secure_url_for(request, 'static_assets', path='/images/favicon.ico') }}" />
     {% block head %}{% endblock %}
   </head>
   <body class="govuk-template__body">

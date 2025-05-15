@@ -38,8 +38,7 @@ def get_session_data(request: Request) -> dict:
     Returns:
         The session data
     """
-    print(request.session)
-    return request.session
+    return request.get("session", {})
 
 views.env.globals["get_session_data"] = get_session_data
 

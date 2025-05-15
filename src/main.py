@@ -31,7 +31,7 @@ app.include_router(collection_router, prefix="/collections", tags=["collections"
 
 
 @app.get("/")
-async def read_root(request: Request, user: dict = Depends(get_current_user)):
+async def index(request: Request, user: dict = Depends(get_current_user)):
     github_service = GithubService(access_token=user.get("access_token"))
     data_config = github_service.get_repo_content_for_path(
         DATA_REPO, "config.yml", format="yaml")
@@ -45,5 +45,5 @@ async def read_root(request: Request, user: dict = Depends(get_current_user)):
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     if exc.status_code == status.HTTP_401_UNAUTHORIZED:
-        return RedirectResponse(url="/auth/login", status_code=status.HTTP_302_FOUND)
+        return RedirectResponse(url=request.url_for("auth_login"), status_code=status.HTTP_302_FOUND)
     raise exc

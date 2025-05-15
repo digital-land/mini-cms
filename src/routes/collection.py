@@ -172,7 +172,7 @@ async def update_item(
         sha=item.get("sha")
     )
 
-    return RedirectResponse(url=f"/collections/{collection_id}/{item_id}", status_code=303)
+    return RedirectResponse(url=request.url_for("item", collection_id=collection_id, item_id=item_id), status_code=303)
 
 
 @router.get("/{collection_id}/{item_id}/edit/fields/{field_path:path}")
@@ -248,4 +248,4 @@ async def update_repeatable_item(
         sha=item.get("sha")
     )
 
-    return RedirectResponse(url=f"/collections/{collection_id}/{item_id}/edit/fields/{field_path}", status_code=303)
+    return RedirectResponse(url=request.url_for("edit_repeatable_item", collection_id=collection_id, item_id=item_id, field_path=field_path), status_code=303)

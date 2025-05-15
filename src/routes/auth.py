@@ -48,7 +48,7 @@ async def auth_user(user: dict = Depends(get_current_user)):
 
 
 @router.get("/login")
-async def auth_init():
+async def auth_login():
     """Initialize auth and redirect"""
     return await sso.get_login_redirect()
 
@@ -68,14 +68,20 @@ async def auth_callback(request: Request):
         "access_token": sso.access_token,  # Store the access token
     }
 
-    return RedirectResponse(url="/")
+    return RedirectResponse(url=request.url_for("index"))
 
 
 @router.get("/logout")
 async def auth_logout(request: Request):
     """Logout"""
     request.session.clear()
-    return RedirectResponse(url="/auth/login")
+    return RedirectResponse(url=request.url_for("auth_logout_success"))
+
+
+@router.get("/logout/success")
+async def auth_logout_success():
+    """Logout success"""
+    return {"message": "Logged out successfully"}
 
 
 @router.get("/check-repo-access")

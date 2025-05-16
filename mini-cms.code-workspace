@@ -1,16 +1,20 @@
 {
   "folders": [
     {
-      "path": ".",
-    },
+      "path": "."
+    }
   ],
   "settings": {
     "editor.insertSpaces": true,
     "editor.detectIndentation": true,
     "editor.tabSize": 2,
     "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modifications",
     "[html]": {
-      "editor.formatOnSave": false,
+      "editor.formatOnSave": false
     },
-  },
+    "[jinja]": {
+      "editor.formatOnSave": false
+    }
+  }
 }

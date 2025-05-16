@@ -20,7 +20,7 @@
             {% if field.hint %} aria-describedby="{{ field.id }}-hint" {% endif %}>
             {{ data[field.id] }}
 
-            {% if data[field.id] == "" %}
+            {% if data[field.id] == "" or data[field.id] == null %}
               <span class="govuk-body-s govuk-!-font-weight-normal">
                 <i>No value set</i>
               </span>

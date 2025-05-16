@@ -4,7 +4,7 @@
 
 {% block content %}
 
-{% set label = repeatable_field_data[repeatable_field.field_map.label] %}
+{% set label = repeatable_field_data[repeatable_field.field_map.label] or "<i>no label set</i>" | safe %}
 {% with action="/collections/" + collection.id + "/" + item.id + "/update/fields/" + field_path,
          method="post",
          caption=collection.label,

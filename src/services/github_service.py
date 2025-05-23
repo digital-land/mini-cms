@@ -4,7 +4,6 @@ import json
 import yaml
 from typing import Dict, Optional, List
 from fastapi import HTTPException, status
-from fastapi.responses import RedirectResponse
 
 class GithubService:
     def __init__(self, access_token: Optional[str] = None):
@@ -30,7 +29,7 @@ class GithubService:
             Dict: User information including login, name, email, etc.
 
         Raises:
-            requests.exceptions.RequestException: If the API request fails
+            HTTPException: If the API request fails or user is not authenticated
         """
         response = requests.get(
             f"{self.base_url}/user",
@@ -38,7 +37,10 @@ class GithubService:
         )
 
         if response.status_code != 200:
-            return RedirectResponse(url="/auth/login")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Not authenticated"
+            )
 
         response.raise_for_status()
         return response.json()

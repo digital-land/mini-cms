@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% block title %}Edit {{ item.data[collection.field_map.label] }} | {{ collection.label }} | Mini CMS{%endblock %}
-{% set back_link = "/collections/" + collection.id + "/" + item.id %}
+{% set back_link = "/collections/" + collection.id + "/" + item.data[collection.field_map.id] %}
 
 {% block content %}
 
 {% set label = repeatable_field_data[repeatable_field.field_map.label] or "<i>no label set</i>" | safe %}
-{% with action="/collections/" + collection.id + "/" + item.id + "/update/fields/" + field_path,
+{% with action="/collections/" + collection.id + "/" + item.data[collection.field_map.id] + "/update/fields/" + field_path,
          method="post",
          caption=collection.label,
          label=label,

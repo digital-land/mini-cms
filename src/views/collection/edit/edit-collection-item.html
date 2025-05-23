@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% block title %}Edit {{ item.data[collection.field_map.label] }} | {{ collection.label }} | Mini CMS{%endblock %}
-{% set back_link = "/collections/" + collection.id + "/" + item.id %}
+{% set back_link = "/collections/" + collection.id + "/" + item.data[collection.field_map.id] %}
 
 {% block content %}
 
 {% set label = item.data[collection.field_map.label] %}
-{% with action="/collections/" + collection.id + "/" + item.id + "/update",
+{% with action="/collections/" + collection.id + "/" + item.data[collection.field_map.id] + "/update",
          method="post",
          caption=collection.label,
          label=label,

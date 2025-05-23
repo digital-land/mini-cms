@@ -4,6 +4,7 @@ import json
 import yaml
 from typing import Dict, Optional, List
 from fastapi import HTTPException, status
+from fastapi.responses import RedirectResponse
 
 class GithubService:
     def __init__(self, access_token: Optional[str] = None):
@@ -35,6 +36,10 @@ class GithubService:
             f"{self.base_url}/user",
             headers=self.headers
         )
+
+        if response.status_code != 200:
+            return RedirectResponse(url="/auth/login")
+
         response.raise_for_status()
         return response.json()
 

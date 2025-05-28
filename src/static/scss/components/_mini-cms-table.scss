@@ -1,0 +1,22 @@
+@use "govuk-frontend/dist/govuk" as govuk;
+
+.mini-cms-table {
+  font-size: 14px;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border: 1px solid govuk.govuk-colour("mid-grey");
+}
+
+.mini-cms-table__head {
+  background-color: govuk.govuk-colour("light-grey");
+}
+
+.mini-cms-table__header,
+.mini-cms-table__cell {
+  width: 100%;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  padding: 10px 5px;
+}

@@ -1,34 +1,33 @@
-<div class="govuk-summary-card">
-  <div class="govuk-summary-card__title-wrapper">
-    <h2 class="govuk-summary-card__title">
-      {% if repeatable_item[field.field_map.label] %}
-        {{ repeatable_item[field.field_map.label] }} ({{ repeatable_item[field.field_map.id] }})
-      {% else %}
-        {{ repeatable_item[field.field_map.id] }}
-      {% endif %}
-    </h2>
-    <ul class="govuk-summary-card__actions">
-      <li class="govuk-summary-card__action">
-        <a class="govuk-link" href="/collections/{{ collection.id }}/{{ item.data[collection.field_map.id] }}/edit/fields/{% if field_path %}{{ field_path }}/{% endif %}{{ field.id }}/{{ repeatable_item_index }}">Edit<span class="govuk-visually-hidden"> {{ field.label_single }}</span></a>
-      </li>
-    </ul>
-  </div>
-  <div class="govuk-summary-card__content">
-  <dl class="govuk-summary-list">
-    {% for subfield in field.fields %}
-    <div class="govuk-summary-list__row">
-      <dt class="govuk-summary-list__key">{{ subfield.label }}</dt>
-      <dd class="govuk-summary-list__value">
-        {% set value=repeatable_item[subfield.id] %}
-        {% set field=subfield %}
-        {% if value and value is sequence and value is not string %}
-          {{ value | length }} {{ field.label | lower }}
-        {% else %}
-          {{ value }}
-        {% endif %}
-      </dd>
-    </div>
-    {% endfor %}
-    </dl>
-  </div>
+<div class="mini-cms-table-wrapper">
+  <table class="govuk-table mini-cms-table">
+    <thead class="govuk-table__head mini-cms-table__head">
+      <tr class="govuk-table__row mini-cms-table__header-row">
+        {% for subfield in field.fields %}
+          <th scope="col" class="govuk-table__header mini-cms-table__header">{{ subfield.label }}</th>
+        {% endfor %}
+        <th scope="col" class="govuk-table__header mini-cms-table__header"></th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body mini-cms-table__body">
+      {% for repeatable_item in data[field.id] %}
+        {% set repeatable_item_index = loop.index0 %}
+        <tr class="govuk-table__row mini-cms-table__row">
+          {% for subfield in field.fields %}
+            <td class="govuk-table__cell mini-cms-table__cell">
+              {% set value=repeatable_item[subfield.id] %}
+              {% set field=subfield %}
+              {% if value and value is sequence and value is not string %}
+                {{ value | length }} {{ field.label | lower }}
+              {% else %}
+                {{ value }}
+              {% endif %}
+            </td>
+          {% endfor %}
+          <td class="govuk-table__cell mini-cms-table__cell">
+            <a class="govuk-link" href="/collections/{{ collection.id }}/{{ item.data[collection.field_map.id] }}/edit/fields/{% if field_path %}{{ field_path }}/{% endif %}{{ field.id }}/{{ repeatable_item_index }}">Edit<span class="govuk-visually-hidden"> {{ field.label_single }}</span></a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>

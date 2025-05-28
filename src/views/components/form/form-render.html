@@ -49,10 +49,7 @@
           />
         {% elif field.type == "repeatable" %}
           <div class="govuk-!-margin-top-3">
-            {% for repeatable_item in data[field.id] %}
-              {% set repeatable_item_index = loop.index0 %}
-              {% include "components/form/repeatable-field.html" %}
-            {% endfor %}
+            {% include "components/form/repeatable-field.html" %}
           </div>
         {% else %}
           <input

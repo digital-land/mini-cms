@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from src.services.github_service import GithubService
 from src.routes.auth import router as auth_router, get_current_user
 from src.routes.collection import router as collection_router
+from src.routes.api import router as api_router
 from src.templates import views, APP_HOST  # Import views from the new module
 
 # Load environment variables from .env file
@@ -28,7 +29,7 @@ app.mount("/assets", StaticFiles(directory="src/static/assets"),
 # Include auth routes
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(collection_router, prefix="/collections", tags=["collections"], dependencies=[Depends(get_current_user)])
-
+app.include_router(api_router, prefix="/api", tags=["api"])
 
 @app.get("/")
 async def index(request: Request, user: dict = Depends(get_current_user)):

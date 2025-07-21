@@ -19,6 +19,29 @@ def get_collection(github_service: GithubService, collection_id: str) -> Dict:
         raise HTTPException(status_code=404, detail="Collection not found")
     return collection
 
+def get_collection_items(github_service: GithubService, collection_id: str) -> List[Dict]:
+    items = []
+    try:
+        items = github_service.list_files_in_directory(DATA_REPO, f"/data/collections/{collection_id}")
+        # Filter out directories and non-YAML files
+        items = [item for item in items if item.get("type") == "file" and
+                (item.get("name").endswith(".yml") or item.get("name").endswith(".yaml"))]
+        # Transform items to get their content
+        items = list(map(
+            lambda item: github_service.get_repo_content_for_path(
+                DATA_REPO, f"/data/collections/{collection_id}/{item.get('name')}", format="yaml"
+            ),
+            items
+        ))
+    except Exception as e:
+        print(f"Error listing files in directory: {str(e)}")
+
+    return items
+
+def get_collection_item(github_service: GithubService, collection_id: str, item_id: str) -> Dict:
+    return github_service.get_repo_content_for_path(
+        DATA_REPO, f"/data/collections/{collection_id}/{item_id}.yml", format="yaml"
+    )
 
 def get_field_by_path(collection: Dict, field_path: str) -> Tuple[Dict, Any, List[str]]:
     """Get field configuration and data by path.
@@ -78,22 +101,7 @@ def update_field_data(item_data: Dict, field_parts: List[str], field_data: Dict)
 async def index(request: Request, user: dict = Depends(get_current_user), collection_id: str = Path(..., description="The ID of the collection to retrieve")):
     github_service = GithubService(access_token=user.get("access_token"))
     collection = get_collection(github_service, collection_id)
-
-    items = []
-    try:
-        items = github_service.list_files_in_directory(DATA_REPO, f"/data/collections/{collection_id}")
-        # Filter out directories and non-YAML files
-        items = [item for item in items if item.get("type") == "file" and
-                (item.get("name").endswith(".yml") or item.get("name").endswith(".yaml"))]
-        # Transform items to get their content
-        items = list(map(
-            lambda item: github_service.get_repo_content_for_path(
-                DATA_REPO, f"/data/collections/{collection_id}/{item.get('name')}", format="yaml"
-            ),
-            items
-        ))
-    except Exception as e:
-        print(f"Error listing files in directory: {str(e)}")
+    items = get_collection_items(github_service, collection_id)
 
     return views.TemplateResponse(
         request=request,

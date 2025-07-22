@@ -4,6 +4,7 @@ import json
 import yaml
 from typing import Dict, Optional, List
 from fastapi import HTTPException, status
+import os
 
 class GithubService:
     def __init__(self, access_token: Optional[str] = None):
@@ -18,8 +19,25 @@ class GithubService:
             "Accept": "application/vnd.github.v3+json",
             "X-GitHub-Api-Version": "2022-11-28"
         }
+        self.params = None
+
         if access_token:
             self.headers["Authorization"] = f"Bearer {access_token}"
+        else:
+            self.params = {
+                "client_id": os.environ.get("GITHUB_CLIENT_ID"),
+                "client_secret": os.environ.get("GITHUB_CLIENT_SECRET")
+            }
+
+    def transform_url(self, url: str) -> str:
+        """
+        Transform the URL to include the client ID and client secret.
+        This is necessary for unauthenticated requests to the GitHub API, otherwise it will hit a rate limit of 60 requests per hour.
+        """
+        if self.params:
+            return url + "?" + "&".join([f"{key}={value}" for key, value in self.params.items()])
+        else:
+            return url
 
     def get_current_user(self) -> Dict:
         """
@@ -60,7 +78,7 @@ class GithubService:
             requests.exceptions.RequestException: If the API request fails
         """
         response = requests.get(
-            f"{self.base_url}/repos/{repo}",
+            self.transform_url(f"{self.base_url}/repos/{repo}"),
             headers=self.headers
         )
         response.raise_for_status()
@@ -113,7 +131,7 @@ class GithubService:
             requests.exceptions.RequestException: If the API request fails
         """
         response = requests.get(
-            f"{self.base_url}/repos/{repo}/contents/{path.strip('/')}",
+            self.transform_url(f"{self.base_url}/repos/{repo}/contents/{path.strip('/')}"),
             headers=self.headers
         )
         response.raise_for_status()
@@ -143,7 +161,7 @@ class GithubService:
             repo (str): Repository name in the format "owner/repo"
         """
         response = requests.get(
-            f"{self.base_url}/repos/{repo}/contents/{path.strip('/')}",
+            self.transform_url(f"{self.base_url}/repos/{repo}/contents/{path.strip('/')}"),
             headers=self.headers
         )
         response.raise_for_status()

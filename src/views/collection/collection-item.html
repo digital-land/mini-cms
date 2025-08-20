@@ -37,11 +37,17 @@
         </dl>
       </div>
     </div>
-    {% for field in collection.fields if field.type in ['repeatable'] %}
-      <h2 class="govuk-heading-m">{{ field.label }}</h2>
-      {% set data = item.data %}
-      {% include "components/form/repeatable-field.html" %}
-    {% endfor %}
+    <section>
+      {% for field in collection.fields if field.type in ['repeatable'] %}
+        <h2 class="govuk-heading-m">{{ field.label }}</h2>
+        {% set data = item.data %}
+        {% include "components/form/repeatable-field.html" %}
+
+        <a href="{{ url_for('new_repeatable_item', collection_id=collection.id, item_id=item.data[collection.field_map.id], field_id=field.id) }}" class="govuk-button">
+          New {{ field.label_single }}
+        </a>
+      {% endfor %}
+    </section>
   </div>
 </div>
 

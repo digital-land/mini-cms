@@ -257,3 +257,31 @@ async def update_repeatable_item(
     )
 
     return RedirectResponse(url=request.url_for("edit_repeatable_item", collection_id=collection_id, item_id=item_id, field_path=field_path), status_code=303)
+
+
+@router.get("/{collection_id}/{item_id}/new/fields/{field_id:path}")
+async def new_repeatable_item(
+    request: Request,
+    user: dict = Depends(get_current_user),
+    collection_id: str = Path(..., description="The ID of the collection to retrieve"),
+    item_id: str = Path(..., description="The ID of the item to retrieve"),
+    field_id: str = Path(..., description="The ID of the field to retrieve")
+):
+    github_service = GithubService(access_token=user.get("access_token"))
+    collection = get_collection(github_service, collection_id)
+    item = github_service.get_repo_content_for_path(
+        DATA_REPO, f"/data/collections/{collection_id}/{item_id}.yml", format="yaml"
+    )
+
+    repeatable_field = next((f for f in collection.get("fields", []) if f.get("id") == field_id), None)
+
+    return views.TemplateResponse(
+        request=request,
+        name="collection/new/new-repeatable-collection-item.html",
+        context={
+            "user": user,
+            "item": item,
+            "collection": collection,
+            "repeatable_field": repeatable_field,
+        }
+    )

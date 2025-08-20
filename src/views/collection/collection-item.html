@@ -44,7 +44,7 @@
         {% include "components/form/repeatable-field.html" %}
 
         <a href="{{ url_for('new_repeatable_item', collection_id=collection.id, item_id=item.data[collection.field_map.id], field_id=field.id) }}" class="govuk-button">
-          New {{ field.label_single }}
+          Add {{ field.label_single }}
         </a>
       {% endfor %}
     </section>

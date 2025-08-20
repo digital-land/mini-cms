@@ -8,11 +8,11 @@
     "dev": "make && make run"
   },
   "engines": {
-    "node": "20.x"
+    "node": ">=20.x"
   },
   "dependencies": {
     "govspeak-visual-editor": "^3.0.0",
-    "govuk-frontend": "^5.9.0"
+    "govuk-frontend": "^5.11.1"
   },
   "devDependencies": {
     "esbuild": "^0.25.1",

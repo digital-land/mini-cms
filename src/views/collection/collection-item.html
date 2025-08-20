@@ -25,7 +25,13 @@
           {% for field in collection.fields if field.type not in ['repeatable'] %}
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">{{ field.label }}</dt>
-              <dd class="govuk-summary-list__value">{{ item.data[field.id] }}</dd>
+              <dd class="govuk-summary-list__value">
+                {% if field.type == 'govspeak' %}
+                  {{ item.data[field.id] | markdown_to_html | safe }}
+                {% else %}
+                  {{ item.data[field.id] }}
+                {% endif %}
+              </dd>
             </div>
           {% endfor %}
         </dl>

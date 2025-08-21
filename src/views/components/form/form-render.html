@@ -51,6 +51,14 @@
           <div class="govuk-!-margin-top-3">
             {% include "components/form/repeatable-field.html" %}
           </div>
+        {% elif field.type == "select" %}
+          <select class="govuk-select" id="{{ field.id }}" name="{{ field.id }}">
+            {% for option in field.options %}
+              <option value="{{ option.value }}" {% if option.value == data[field.id] %} selected {% endif %}>
+                {{ option.label }}
+              </option>
+            {% endfor %}
+          </select>
         {% else %}
           <input
             class="govuk-input"

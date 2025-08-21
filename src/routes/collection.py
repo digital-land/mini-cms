@@ -285,3 +285,14 @@ async def new_repeatable_item(
             "repeatable_field": repeatable_field,
         }
     )
+
+@router.post("/{collection_id}/{item_id}/new/fields/{field_id:path}")
+async def create_repeatable_item(
+    request: Request,
+    user: dict = Depends(get_current_user),
+    collection_id: str = Path(..., description="The ID of the collection to retrieve"),
+    item_id: str = Path(..., description="The ID of the item to retrieve"),
+    field_id: str = Path(..., description="The ID of the field to retrieve")
+):
+    print(request.form)
+    return RedirectResponse(url=request.url_for("item", collection_id=collection_id, item_id=item_id), status_code=303)

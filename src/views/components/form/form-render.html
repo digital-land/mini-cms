@@ -22,7 +22,7 @@
 
             {% if data[field.id] == "" or data[field.id] == null %}
               <span class="govuk-body-s govuk-!-font-weight-normal">
-                <i>No value set</i>
+                <i>No value set (default value: {{ field.default_value }})</i>
               </span>
             {% endif %}
           </p>

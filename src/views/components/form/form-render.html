@@ -47,6 +47,14 @@
             {% if field.hint %} aria-describedby="{{ field.id }}-hint" {% endif %}
             {% if field.required %} required {% endif %}
           />
+        {% elif field.type == "datetime" %}
+          <input
+            class="govuk-input"
+            id="{{ field.id }}"
+            name="{{ field.id }}"
+            type="datetime-local"
+            value="{{ data[field.id] }}"
+          />
         {% elif field.type == "repeatable" %}
           <div class="govuk-!-margin-top-3">
             {% include "components/form/repeatable-field.html" %}

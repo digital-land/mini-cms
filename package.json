@@ -5,15 +5,14 @@
     "build:js": "esbuild src/static/js/main.js --bundle --minify --outfile=src/static/dist/js/main.js",
     "watch:css": "sass src/static/scss/main.scss src/static/dist/css/main.css --watch --load-path=node_modules",
     "watch:js": "esbuild src/static/js/main.js --bundle --watch --outfile=src/static/dist/js/main.js",
-    "dev": "make && make run",
-    "heroku-postbuild": "npm run build"
+    "dev": "make && make run"
   },
   "engines": {
-    "node": "20.x"
+    "node": ">=20.x"
   },
   "dependencies": {
     "govspeak-visual-editor": "^3.0.0",
-    "govuk-frontend": "^5.9.0"
+    "govuk-frontend": "^5.11.1"
   },
   "devDependencies": {
     "esbuild": "^0.25.1",

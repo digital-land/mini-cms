@@ -2,7 +2,7 @@
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-margin-bottom-6">
       <span class="govuk-caption-l">{{ caption }}</span>
-      <h1 class="govuk-fieldset__heading">Edit {{ label }}</h1>
+      <h1 class="govuk-fieldset__heading">{{ heading }}</h1>
     </legend>
     {% for field in fields %}
       <div class="govuk-form-group">
@@ -22,7 +22,7 @@
 
             {% if data[field.id] == "" or data[field.id] == null %}
               <span class="govuk-body-s govuk-!-font-weight-normal">
-                <i>No value set</i>
+                <i>No value set (default value: {{ field.default_value }})</i>
               </span>
             {% endif %}
           </p>
@@ -47,10 +47,26 @@
             {% if field.hint %} aria-describedby="{{ field.id }}-hint" {% endif %}
             {% if field.required %} required {% endif %}
           />
+        {% elif field.type == "datetime" %}
+          <input
+            class="govuk-input"
+            id="{{ field.id }}"
+            name="{{ field.id }}"
+            type="datetime"
+            value="{{ data[field.id] }}"
+          />
         {% elif field.type == "repeatable" %}
           <div class="govuk-!-margin-top-3">
             {% include "components/form/repeatable-field.html" %}
           </div>
+        {% elif field.type == "select" %}
+          <select class="govuk-select" id="{{ field.id }}" name="{{ field.id }}">
+            {% for option in field.options %}
+              <option value="{{ option.value }}" {% if option.value == data[field.id] %} selected {% endif %}>
+                {{ option.label }}
+              </option>
+            {% endfor %}
+          </select>
         {% else %}
           <input
             class="govuk-input"

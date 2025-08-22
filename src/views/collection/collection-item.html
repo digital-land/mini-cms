@@ -25,17 +25,29 @@
           {% for field in collection.fields if field.type not in ['repeatable'] %}
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">{{ field.label }}</dt>
-              <dd class="govuk-summary-list__value">{{ item.data[field.id] }}</dd>
+              <dd class="govuk-summary-list__value">
+                {% if field.type == 'govspeak' %}
+                  {{ item.data[field.id] | markdown_to_html | safe }}
+                {% else %}
+                  {{ item.data[field.id] }}
+                {% endif %}
+              </dd>
             </div>
           {% endfor %}
         </dl>
       </div>
     </div>
-    {% for field in collection.fields if field.type in ['repeatable'] %}
-      <h2 class="govuk-heading-m">{{ field.label }}</h2>
-      {% set data = item.data %}
-      {% include "components/form/repeatable-field.html" %}
-    {% endfor %}
+    <section>
+      {% for field in collection.fields if field.type in ['repeatable'] %}
+        <h2 class="govuk-heading-m">{{ field.label }}</h2>
+        {% set data = item.data %}
+        {% include "components/form/repeatable-field.html" %}
+
+        <a href="{{ url_for('new_repeatable_item', collection_id=collection.id, item_id=item.data[collection.field_map.id], field_id=field.id) }}" class="govuk-button">
+          Add {{ field.label_single }}
+        </a>
+      {% endfor %}
+    </section>
   </div>
 </div>
 

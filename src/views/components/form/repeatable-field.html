@@ -1,10 +1,20 @@
+{% set header_map = namespace(id_column_header="ID", label_column_header="Label") %}
+
+{% for subfield in field.fields %}
+  {% if subfield.id == field.field_map.id %}
+    {% set header_map.id_column_header = subfield.label %}
+  {% endif %}
+  {% if subfield.id == field.field_map.label %}
+    {% set header_map.label_column_header = subfield.label %}
+  {% endif %}
+{% endfor %}
+
 <div class="mini-cms-table-wrapper">
   <table class="govuk-table mini-cms-table">
     <thead class="govuk-table__head mini-cms-table__head">
       <tr class="govuk-table__row mini-cms-table__header-row">
-        {% for subfield in field.fields %}
-          <th scope="col" class="govuk-table__header mini-cms-table__header">{{ subfield.label }}</th>
-        {% endfor %}
+        <th scope="col" class="govuk-table__header mini-cms-table__header">{{ header_map.id_column_header }}</th>
+        <th scope="col" class="govuk-table__header mini-cms-table__header">{{ header_map.label_column_header }}</th>
         <th scope="col" class="govuk-table__header mini-cms-table__header"></th>
       </tr>
     </thead>
@@ -12,17 +22,12 @@
       {% for repeatable_item in data[field.id] %}
         {% set repeatable_item_index = loop.index0 %}
         <tr class="govuk-table__row mini-cms-table__row">
-          {% for subfield in field.fields %}
-            <td class="govuk-table__cell mini-cms-table__cell">
-              {% set value=repeatable_item[subfield.id] %}
-              {% set field=subfield %}
-              {% if value and value is sequence and value is not string %}
-                {{ value | length }} {{ field.label | lower }}
-              {% else %}
-                {{ value }}
-              {% endif %}
-            </td>
-          {% endfor %}
+          <td class="govuk-table__cell mini-cms-table__cell">
+            {{ repeatable_item[field.field_map.id] }}
+          </td>
+          <td class="govuk-table__cell mini-cms-table__cell">
+            {{ repeatable_item[field.field_map.label] }}
+          </td>
           <td class="govuk-table__cell mini-cms-table__cell">
             <a class="govuk-link" href="/collections/{{ collection.id }}/{{ item.data[collection.field_map.id] }}/edit/fields/{% if field_path %}{{ field_path }}/{% endif %}{{ field.id }}/{{ repeatable_item_index }}">Edit<span class="govuk-visually-hidden"> {{ field.label_single }}</span></a>
           </td>

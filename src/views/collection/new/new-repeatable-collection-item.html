@@ -5,7 +5,7 @@
 {% block content %}
 
 {% set label = repeatable_field.label | safe %}
-{% with action=url_for('create_repeatable_item', collection_id=collection.id, item_id=item.data[collection.field_map.id], field_id=field_id),
+{% with action=secure_url_for(request, 'create_repeatable_item', collection_id=collection.id, item_id=item.data[collection.field_map.id], field_id=field_id),
          method="post",
          caption=collection.label,
          label=label,

@@ -1,5 +1,7 @@
 <div id="field-{{ field.id }}-content" class="govuk-visually-hidden">
-  {{ data[field.id] | markdown_to_html | safe }}
+  {% if data[field.id] %}
+    {{ data[field.id] | markdown_to_html | safe }}
+  {% endif %}
 </div>
 
 <div id="field-{{ field.id }}-editor"></div>

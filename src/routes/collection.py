@@ -6,6 +6,7 @@ from src.templates import views
 import os
 from fastapi.templating import Jinja2Templates
 from typing import Dict, List, Any, Tuple
+import uuid
 
 DATA_REPO = os.environ.get("DATA_REPO", "")  # Format: owner/repo
 
@@ -283,10 +284,11 @@ async def new_repeatable_item(
             "item": item,
             "collection": collection,
             "repeatable_field": repeatable_field,
+            "field_id": field_id
         }
     )
 
-@router.post("/{collection_id}/{item_id}/new/fields/{field_id:path}")
+@router.post("/{collection_id}/{item_id}/new/fields/{field_id}")
 async def create_repeatable_item(
     request: Request,
     user: dict = Depends(get_current_user),
@@ -294,5 +296,39 @@ async def create_repeatable_item(
     item_id: str = Path(..., description="The ID of the item to retrieve"),
     field_id: str = Path(..., description="The ID of the field to retrieve")
 ):
-    print(request.form)
+    item_file_path = f"/data/collections/{collection_id}/{item_id}.yml"
+    github_service = GithubService(access_token=user.get("access_token"))
+    collection = get_collection(github_service, collection_id)
+    item = github_service.get_repo_content_for_path(
+        DATA_REPO, item_file_path, format="yaml", get_sha=True
+    )
+
+    item_content = item.get("content")
+    form_data = await request.form()
+
+    # Get the repeatable field
+    repeatable_field = next((f for f in collection.get("fields", []) if f.get("id") == field_id), None)
+
+    # Create a new item
+    new_item = {}
+
+    for field in repeatable_field.get("fields", []):
+        if (form_data.get(field.get("id")) is None or form_data.get(field.get("id")) == '') and field.get("default_value") == 'generate_uuid()':
+            new_item[field.get("id")] = str(uuid.uuid4())
+        else:
+            new_item[field.get("id")] = form_data.get(field.get("id"))
+
+    # Update the item content
+    item_content["data"][field_id].append(new_item)
+
+    # Update the item in the repository
+    github_service.update_repo_content(
+        DATA_REPO,
+        item_file_path,
+        item_content,
+        format="yaml",
+        commit_message=f"Create new collection item {collection_id}/{item_id}",
+        sha=item.get("sha")
+    )
+
     return RedirectResponse(url=request.url_for("item", collection_id=collection_id, item_id=item_id), status_code=303)

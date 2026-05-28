@@ -15,7 +15,7 @@ jobs:
       GITHUB_CLIENT_SECRET: ${{ secrets.GITHUB_CLIENT_SECRET }}
       DATA_REPO: ${{ secrets.DATA_REPO }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
@@ -27,7 +27,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y rsync
 
-      - uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.DEVELOPMENT_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.DEVELOPMENT_AWS_ACCESS_SECRET }}
@@ -37,7 +37,7 @@ jobs:
           npm install
           make all
 
-      - uses: aws-actions/amazon-ecr-login@v1
+      - uses: aws-actions/amazon-ecr-login@v2
 
       - run: docker pull $DOCKER_REPO:latest || echo "no current latest image"
 
